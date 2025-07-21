@@ -4,7 +4,7 @@ import pytz
 import dateparser
 from difflib import get_close_matches
 import langchain
-from config import api_key, HUGGINGFACE_TOKEN
+from emotion_aware_assistant.config import api_key, HUGGINGFACE_TOKEN
 import tensorflow as tf
 from langchain.tools import tool
 from typing import Dict
