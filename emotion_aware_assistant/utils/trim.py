@@ -1,4 +1,4 @@
-from gloabal_import import *
+from emotion_aware_assistant.gloabal_import import *
 def trim_to_last_full_sentence(text: str, word_limit: int = 100) -> str:
     words = text.split()
     if len(words) <= word_limit:
