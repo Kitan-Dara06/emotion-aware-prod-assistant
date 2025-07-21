@@ -1,6 +1,6 @@
-from utils.types import GraphState
-from gloabal_import import *
-from services.llm_model import llm
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.services.llm_model import llm
 
 def user_profile_node(state: GraphState) -> GraphState:
     prompt = ChatPromptTemplate.from_messages([
