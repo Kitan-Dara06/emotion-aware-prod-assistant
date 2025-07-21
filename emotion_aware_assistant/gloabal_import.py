@@ -4,8 +4,9 @@ import pytz
 import dateparser
 from difflib import get_close_matches
 import langchain
+from openai import OpenAI
 from emotion_aware_assistant.config import api_key, HUGGINGFACE_TOKEN
-import tensorflow as tf
+# import tensorflow as tf
 from langchain.tools import tool
 from typing import Dict
 from langchain_core.runnables import RunnableLambda, RunnableBranch, RunnableMap
@@ -39,6 +40,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import os
 import pickle
-from transformers import pipeline
+
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
