@@ -1,0 +1,65 @@
+from gloabal_import import *
+from services.llm_model import llm
+from utils.types import GraphState
+from services.calendar import create_event
+def scheduleEvent(full_input : str):
+    Schedule_prompt = ChatPromptTemplate.from_messages([
+        ("system", """
+Only return a valid JSON with two fields:
+
+- `event`: what the user wants to do
+- `time`: when they want to do it
+
+Example:
+{{
+  "event": "visit the market",
+  "time": "5:30pm Thursday"
+}}
+DO NOT add any explanation or extra text.
+"""),
+        ("human", "{joined_input}")
+    ])
+
+    Schedule_chain = Schedule_prompt | llm
+    raw_output = Schedule_chain.invoke({"joined_input": full_input})
+    print("🧠 Raw LLM Output:", raw_output.content)
+
+    try:
+        match = re.search(r"\{.*?\}", raw_output.content, re.DOTALL)
+        if not match:
+            raise ValueError("No JSON object found.")
+        parsed = json.loads(match.group())
+        if "time" not in parsed  or not  parsed['time']:
+          return {"error": "Can you be more specific about when?", "raw_output": raw_output.content[:1000]}
+        return parsed
+    except Exception as e:
+        return {"error": str(e), "raw_output": raw_output.content[:1000]}
+
+def Schedule_node(state: GraphState) -> GraphState:
+    history = state.get("history", [])[-4:]
+    full_input = "\n".join(history + [state["input"]])
+    schedule_result = scheduleEvent(full_input)
+    print("📦 scheduleEvent returned:", schedule_result)
+
+    if "error" in schedule_result:
+        return {
+            **state,
+            "tool_result": "Sorry, I couldn't understand what you want to schedule.",
+             "history": history + [state["input"]]
+        }
+
+    schedule_event = schedule_result.get('event', 'an event')
+    schedule_time = schedule_result.get('time', 'sometime')
+
+    # Call your tool here (or just mock it)
+    tool_result = create_event(schedule_event, schedule_time)
+    updated_events = state.get("schedule_event", []) + [
+        {"event": schedule_event, "time": schedule_time}
+    ]
+
+    return {
+        **state,
+        "schedule_event": updated_events,
+        'tool_result': tool_result,
+        "history": history + [state["input"]]
+    }

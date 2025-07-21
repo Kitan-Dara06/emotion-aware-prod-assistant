@@ -1,0 +1,19 @@
+from utils.types import GraphState
+from gloabal_import import *
+
+def post_overwhelm_router_node(state: GraphState) -> Literal[
+    "reschedule_node", 
+    "prioritize_tasks_node", 
+    "talk_only_node", 
+    "final_response_node"
+]:
+    followup = state.get("input", "").lower()
+
+    if state.get("awaiting_user_confirmation"):
+        if "reschedule" in followup or "later" in followup:
+            return "reschedule_node"
+        elif "prioritize" in followup or "first" in followup or "important" in followup:
+            return "prioritize_tasks_node"
+        else:
+            return "talk_only_node"
+    return "final_response_node"
