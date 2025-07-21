@@ -1,13 +1,11 @@
-transformers
-accelerate
-bitsandbytes
+
 python-dotenv
-torch
 langchain_openai
 langchain
 langchain_core
 google-auth
 google-auth-oauthlib
+openai>=1.2.3
 google-api-python-client
 google-auth-httplib2
 google-api-python-client
@@ -18,7 +16,6 @@ requests
 langgraph
 dateparser
 pytz
-tensorflow
 fastapi
 
 uvicorn
