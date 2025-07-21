@@ -1,6 +1,6 @@
-from nodes import*
-from utils.types import GraphState
-from gloabal_import import*
+from emotion_aware_assistant.nodes import *
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.gloabal_import import*
 from dotenv import load_dotenv
 load_dotenv()
 
