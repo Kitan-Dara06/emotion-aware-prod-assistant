@@ -1,5 +1,5 @@
-from gloabal_import import *
-from services.llm_model import llm
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.services.llm_model import llm
 def parse_json_output(ai_msg):
     try:
         # Check if it's an AIMessage (LangChain), else treat as raw string
