@@ -1,9 +1,9 @@
 
-from services.emotion import detect_emotion
-from gloabal_import import *
-from services.emotion import detect_emotion
-from services.prompts import strict_system_prompt
-from utils.helper import parse_json_output
+from emotion_aware_assistant.services.emotion import detect_emotion
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.services.emotion import detect_emotion
+from emotion_aware_assistant.services.prompts import strict_system_prompt
+from emotion_aware_assistant.utils.helper import parse_json_output
 
 
 llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=api_key, max_tokens=100, temperature=0.7)
