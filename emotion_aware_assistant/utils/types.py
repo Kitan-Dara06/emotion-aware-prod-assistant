@@ -1,4 +1,4 @@
-from gloabal_import import *
+from emotion_aware_assistant.gloabal_import import *
 
 class GraphState(TypedDict):
     input: str
