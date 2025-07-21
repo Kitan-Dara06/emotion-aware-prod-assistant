@@ -1,5 +1,5 @@
 
-from gloabal_import import *
+from emotion_aware_assistant.gloabal_import import *
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
