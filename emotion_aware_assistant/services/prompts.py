@@ -1,4 +1,4 @@
-from services.emotion import detect_emotion
+from emotion_aware_assistant.services.emotion import detect_emotion
 strict_system_prompt = """
 You are an emotionally intelligent assistant.
 
