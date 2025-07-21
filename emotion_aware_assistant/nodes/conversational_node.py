@@ -1,9 +1,9 @@
-from utils.types import GraphState
-from gloabal_import import *
-from services.llm_model import llm
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.services.llm_model import llm
 
-from utils.trim import cleanly_truncate
-from utils.trim import trim_to_last_full_sentence
+from emotion_aware_assistant.utils.trim import cleanly_truncate
+from emotion_aware_assistant.utils.trim import trim_to_last_full_sentence
 def vent_node(state: GraphState) -> GraphState:
     user_profile = state.get("user_profile", "You prefer warm, human responses.")
     full_input = "\n".join(state.get("history", []) + [state["input"]])
