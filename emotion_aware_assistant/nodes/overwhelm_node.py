@@ -1,8 +1,8 @@
-from gloabal_import import *
-from utils.types import GraphState
-from services.calendar import get_calendar_service
-from services.calendar import fetch_upcoming_events
-from services.llm_model import llm
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.services.calendar import get_calendar_service
+from emotion_aware_assistant.services.calendar import fetch_upcoming_events
+from emotion_aware_assistant.services.llm_model import llm
 
 def overwhelm_node(state: GraphState) -> GraphState:
     service = get_calendar_service()
