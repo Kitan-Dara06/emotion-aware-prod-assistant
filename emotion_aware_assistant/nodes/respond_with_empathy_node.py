@@ -1,6 +1,6 @@
-from services.assistant import respond_with_empathy
-from utils.types import GraphState
-from gloabal_import import *
+from emotion_aware_assistant.services.assistant import respond_with_empathy
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.gloabal_import import *
 
 
 def respond_with_empathy_node(state: GraphState) -> GraphState:
