@@ -1,7 +1,7 @@
-from gloabal_import import *
-from services.llm_model import llm
-from utils.types import GraphState
-from services.calendar import create_event
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.services.llm_model import llm
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.services.calendar import create_event
 def scheduleEvent(full_input : str):
     Schedule_prompt = ChatPromptTemplate.from_messages([
         ("system", """
