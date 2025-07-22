@@ -126,11 +126,11 @@ def run_graph(user_input: UserInput):
     print(user_input)
 
     initial_state = {
-        "input": user_input.input,
-        "user_profile": user_input.user_profile,
-        "history": user_input.history,
-        "emotion_history": user_input.emotion_history
-    }
+    "input": user_input.input,
+    "user_profile": user_input.user_profile or "You prefer warm, validating responses.",
+    "history": user_input.history or [],
+    "emotion_history": user_input.emotion_history or []
+  }
 
     try:
         result = graph_app.invoke(initial_state)
