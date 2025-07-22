@@ -1,5 +1,5 @@
 from emotion_aware_assistant.gloabal_import import *
-
+from emotion_aware_assistant.config import api_key
 # classifier = pipeline(
 #     "text-classification",
 #     model="SamLowe/roberta-base-go_emotions",
