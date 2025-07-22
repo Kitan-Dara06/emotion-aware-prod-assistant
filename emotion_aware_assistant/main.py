@@ -102,6 +102,9 @@ from pydantic import BaseModel
 
 # FastAPI App
 app = FastAPI()
+@app.get("/")
+def read_root():
+    return {"message": "Emotion-Aware Assistant is live 🚀"}
 
 class UserInput(BaseModel):
     input: str
