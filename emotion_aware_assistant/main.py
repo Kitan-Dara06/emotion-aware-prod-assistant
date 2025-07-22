@@ -109,7 +109,7 @@ def read_root():
     return {"message": "Emotion-Aware Assistant is live 🚀"}
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["emotion-aware-assistant-frontend.vercel.app"],  
+    allow_origins=["https://emotion-aware-assistant-frontend.vercel.app"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
