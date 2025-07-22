@@ -103,10 +103,6 @@ from pydantic import BaseModel
 # FastAPI App
 app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    return {"message": "Emotion-Aware Assistant is live 🚀"}
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://emotion-aware-assistant-frontend.vercel.app"],  
@@ -114,6 +110,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def read_root():
+    return {"message": "Emotion-Aware Assistant is live 🚀"}
+
 class UserInput(BaseModel):
     input: str
     user_profile: str = "You prefer warm, validating responses."
