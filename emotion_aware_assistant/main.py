@@ -101,18 +101,22 @@ from fastapi import FastAPI, Request
 from pydantic import BaseModel
 
 # FastAPI App
-app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://emotion-aware-assistant-frontend.vercel.app"],  
+    allow_origins=["https://emotion-aware-assistant-frontend.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 @app.get("/")
 def read_root():
     return {"message": "Emotion-Aware Assistant is live 🚀"}
+
+# ✅ Handle CORS preflight manually
+@app.options("/chat")
+async def preflight_handler(request: Request):
+    return JSONResponse(content={}, status_code=200)
 
 class UserInput(BaseModel):
     input: str
@@ -126,11 +130,11 @@ def run_graph(user_input: UserInput):
     print(user_input)
 
     initial_state = {
-    "input": user_input.input,
-    "user_profile": user_input.user_profile or "You prefer warm, validating responses.",
-    "history": user_input.history or [],
-    "emotion_history": user_input.emotion_history or []
-  }
+        "input": user_input.input,
+        "user_profile": user_input.user_profile,
+        "history": user_input.history,
+        "emotion_history": user_input.emotion_history
+    }
 
     try:
         result = graph_app.invoke(initial_state)
