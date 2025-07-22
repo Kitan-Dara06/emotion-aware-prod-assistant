@@ -5,19 +5,18 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 # Get absolute path to the current directory (i.e., services/)
 BASE_DIR = os.path.dirname(__file__)
-
-SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'service_account.json')
+service_account_info = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+credentials = service_account.Credentials.from_service_account_info(
+    service_account_info, scopes=SCOPES
+)
+# SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'service_account.json')
 CLIENT_SECRET_FILE = os.path.join(BASE_DIR, 'client_secret.json')
 TOKEN_PICKLE_FILE = os.path.join(BASE_DIR, 'token.pkl')
 
 
 def get_calendar_service(mode="service"):
     if mode == "service":
-        # Service account mode (no user login)
-        credentials = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE,
-            scopes=SCOPES,
-        )
+        return build("calendar", "v3", credentials=credentials)
     elif mode == "client":
         # OAuth client mode (user login required)
         creds = None
