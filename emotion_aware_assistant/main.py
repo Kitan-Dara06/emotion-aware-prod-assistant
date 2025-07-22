@@ -101,6 +101,8 @@ from fastapi import FastAPI, Request
 from pydantic import BaseModel
 
 # FastAPI App
+app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://emotion-aware-assistant-frontend.vercel.app"],
