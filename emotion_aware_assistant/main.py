@@ -122,13 +122,20 @@ class UserInput(BaseModel):
 
 @app.post("/chat")
 def run_graph(user_input: UserInput):
+    print("Incoming request:")
+    print(user_input)
+
     initial_state = {
         "input": user_input.input,
         "user_profile": user_input.user_profile,
         "history": user_input.history,
         "emotion_history": user_input.emotion_history
     }
-    result = graph_app.invoke(initial_state)
-    return result
 
-
+    try:
+        result = graph_app.invoke(initial_state)
+        print("Graph Result:", result)
+        return result
+    except Exception as e:
+        print("Error during graph invocation:", e)
+        return {"final_response": "Sorry, something went wrong."}
