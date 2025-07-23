@@ -105,7 +105,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://emotion-aware-assistant-frontend-h50xmwi05.vercel.app"],
+    allow_origins=["https://emotion-aware-assistant-frontend-filqepkao.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
