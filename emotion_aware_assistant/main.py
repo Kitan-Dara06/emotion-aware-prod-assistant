@@ -123,14 +123,12 @@ def read_root():
 def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
 
-    # Convert to dict early
-    state_dict = state.model_dump()
-
-    if not state_dict.get("input", "").strip():  # trigger welcome node
-        return welcome_node(state_dict)
+    # Check for welcome input
+    if not state.input or not state.input.strip():
+        return welcome_node(state).model_dump()
 
     try:
-        result = graph_app.invoke(state_dict)
+        result = graph_app.invoke(state.model_dump())
         return result
     except Exception as e:
         print("Graph Error:", e)
