@@ -116,34 +116,16 @@ def read_root():
     return {"message": "Emotion-Aware Assistant is live 🚀"}
 
 
-
 @app.post("/chat")
-def run_graph(user_input: str):
-    print("Incoming request:")
-    print(user_input)
+def run_graph(state: GraphState = Body(...)):
+    print("Incoming state:", state)
+
+    if not state.input.strip():  # trigger welcome node
+        return welcome_node(state)
 
     try:
-        initial_state = {
-            "input": user_input,
-            "user_profile": None,
-            "history": [],
-            "emotion_history": [],
-            "emotion": None,
-            "goal": None,
-            "suggested_action": None,
-            "response": None,
-            "reminder": [],
-            "schedule_event": [],
-            "reschedule_event": [],
-            "tool_result": None,
-        }
-
-        if not user_input.strip():
-            return welcome_node(initial_state)
-
-        result = graph_app.invoke(initial_state)
+        result = graph_app.invoke(state)
         return result
-
     except Exception as e:
         print("Graph Error:", e)
         return JSONResponse(
