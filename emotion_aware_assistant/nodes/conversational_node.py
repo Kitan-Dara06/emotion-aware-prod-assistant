@@ -1,44 +1,51 @@
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
-
+from emotion_aware_assistant.utils.ensure_state import ensure_graph_state  
 from emotion_aware_assistant.utils.trim import cleanly_truncate
 from emotion_aware_assistant.utils.trim import trim_to_last_full_sentence
+
 def vent_node(state: GraphState) -> GraphState:
-    user_profile = state.get("user_profile", "You prefer warm, human responses.")
+    state = ensure_graph_state(state)  
+
+    user_profile = state.user_profile or "You prefer warm, human responses."
+
     full_input = "\n".join(
-    [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]]
-)
+        [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""]
+    )
+
     prompt = ChatPromptTemplate.from_messages([
         SystemMessagePromptTemplate.from_template("""
-  You're a compassionate and emotionally intelligent assistant.
-  {user_profile}
-  You're a safe space for users to express their emotions.
+You're a compassionate and emotionally intelligent assistant.
+{user_profile}
+You're a safe space for users to express their emotions.
 
- The user is venting don’t try to fix or explain anything. Just reflect their feelings and validate them.
+The user is venting. Don’t try to fix or explain anything. Just reflect their feelings and validate them.
 
 Be gentle, nonjudgmental, and empathetic. Let them feel seen.
 The user just wants to vent and express their emotions.
-Let them feel heard  don't interrupt or problem-solve.
+Let them feel heard. Don't interrupt or problem-solve.
 Validate what they’re saying and gently offer support if appropriate.
-"""),
-        
+        """),
         HumanMessagePromptTemplate.from_template("{joined_input}")
     ])
 
-    response = (prompt | llm).invoke({"joined_input": full_input,
-                                     "user_profile": "You prefer warm, validating responses." })
+    response = (prompt | llm).invoke({
+        "joined_input": full_input,
+        "user_profile": user_profile
+    })
 
     return {
-        **state,
+        **state.dict(),  
         "tool_result": None,
         "final_response": response.content
     }
 
 def answer_question_node(state : GraphState) -> GraphState:
+  state = ensure_graph_state(state)  
   full_input = "\n".join(
-    [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
-  user_profile = state.get("user_profile", "You prefer warm, human responses.")
+    [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
+  user_profile = state.user_profile or "You prefer warm, human responses."
   prompt = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("""
       You are an emotionally aware assistant helping answer user questions thoughtfully and clearly.
@@ -65,17 +72,18 @@ def answer_question_node(state : GraphState) -> GraphState:
   final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
 
   return {
-    **state,
+    **state.dict(),
     "tool_result": None,
     "final_response": final_summary
 }
     
 
 def do_nothing_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)  
     full_input = "\n".join(
-      [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]]
+       [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""]
 )
-    user_profile = state.get("user_profile", "You prefer warm, human responses.")
+    user_profile = state.user_profile or "You prefer warm, human responses."
 
     prompt = ChatPromptTemplate.from_messages([
         SystemMessagePromptTemplate.from_template("""The user just said something casual or friendly, like a joke, meme, or light comment.
@@ -86,17 +94,18 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
     ])
 
     response = (prompt | llm).invoke({"joined_input": full_input,
-                                      "user_profile": "You prefer warm, validating responses." })
+                                      "user_profile": user_profile })
 
     return {
-        **state,
+        **state.dict(),
         "tool_result": None,
         "final_response": response.content
     }
 
 
 def give_advice_node(state : GraphState) -> GraphState:
-  full_input = "\n".join(  [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
+  full_input = "\n".join(  [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
+  state = ensure_graph_state(state)  
   prompt = ChatPromptTemplate.from_messages([
       SystemMessage(
             content = f"""The user is asking for advice on what to do in their situation.
@@ -112,7 +121,7 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
   response = (prompt |llm ).invoke({"joined_input": full_input},)
 
   return {
-        **state,
+        **state.dict(),
         "tool_result": None,
         "final_response": response.content
     }
@@ -120,9 +129,10 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
 
 def continue_conversation_node(state : GraphState) -> GraphState:
-  full_input = "\n".join( [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
-  user_profile = state.get("user_profile", "You prefer warm, human responses.")
-  emotion = state."emotion" or ""
+  state = ensure_graph_state(state)  
+  full_input = "\n".join( [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
+  user_profile = state.user_profile or "You prefer warm, human responses."
+  emotion = state.emotion or ""
   prompt = ChatPromptTemplate.from_messages([
       SystemMessagePromptTemplate.from_template("""You are a caring assistant continuing a heartfelt conversation.
 
@@ -140,20 +150,21 @@ Do not give advice or solutions here  just invite them to share more."""),
                                     "emotion": emotion, "user_profile": user_profile})
 
   return {
-        **state,
+        **state.dict(),
         "tool_result": None,
         "final_response": response.content
     }
   
 def fetch_info_node(state: GraphState) -> GraphState:
-    user_input = state.get("input", "").strip()
-    history = state.get("history", [])
-    user_profile = state.get("user_profile", "You prefer warm, human responses.")
+    user_input = (state.input or "").strip()
+    state = ensure_graph_state(state)  
+    history = state.history or []
+    user_profile = state.user_profile or "You prefer warm, human responses."
 
     # Validate input
     if not user_input:
         return {
-            **state,
+            **state.dict(),
             "tool_result": None,
             "final_response": (
                 "It seems like your message wasn’t complete. "
@@ -172,7 +183,7 @@ def fetch_info_node(state: GraphState) -> GraphState:
         max_tokens=300
     )
 
-    # Compose the prompt
+    
     prompt = ChatPromptTemplate.from_messages([
         SystemMessage(content=f"""
 You’re an assistant who provides helpful, emotionally aware information.
@@ -187,7 +198,7 @@ User profile: {user_profile}
 
     chain = prompt | info_llm
 
-    # Run and handle errors
+   
     try:
         response = chain.invoke({"joined_input": full_input})
         final_response = response.content.strip()
@@ -195,23 +206,24 @@ User profile: {user_profile}
 
     except Exception as e:
         return {
-            **state,
+            **state.dict(),
             "tool_result": None,
             "final_response": f"⚠️ Error during info fetch: {str(e)}"
         }
 
     return {
-        **state,
+        **state.dict(),
         "tool_result": None,
         "final_response": clean_output
     }
     
 def summarize_input_node(state: GraphState) -> GraphState:
-    user_input = state["input"]
+    state = ensure_graph_state(state)  
+    user_input = state.input or ""
 
     if len(user_input.split()) > 500:
         return {
-            **state,
+            **state.dict(),
             "tool_result": None,
             "final_response": (
                 "That’s quite a lot to process at once. "
@@ -245,13 +257,13 @@ Be clear and emotionally aware, but don’t reflect past chats or context.
         final_summary = response.content.strip()
     except Exception as e:
         return {
-            **state,
+            **state.dict(),
             "tool_result": None,
             "final_response": f"⚠️ Error during summarization: {str(e)}"
         }
 
     return {
-        **state,
+        **state.dict(),
         "tool_result": None,
         "final_response": final_summary
     }
