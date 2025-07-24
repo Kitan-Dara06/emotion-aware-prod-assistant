@@ -123,10 +123,6 @@ def read_root():
 def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
 
-    # Check for welcome input
-    if not state.input or not state.input.strip():
-        return welcome_node(state).model_dump()
-
     try:
         result = graph_app.invoke(state.model_dump())
         return result
