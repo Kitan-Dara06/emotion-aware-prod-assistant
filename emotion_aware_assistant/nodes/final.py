@@ -3,6 +3,7 @@ from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 
 def final_response_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
     tool_output = state.tool_result
     user_profile = state.user_profile or "You appreciate warmth and gentle encouragement."
 
