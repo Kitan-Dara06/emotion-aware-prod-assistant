@@ -56,8 +56,8 @@ def answer_question_node(state : GraphState) -> GraphState:
 ])
 
   response = (prompt | llm).invoke({
-    "input": state["input"],
-    "user_profile": state.get("user_profile", ""),
+    "input": state.input,
+    "user_profile": state.user_profile or "",
     "joined_input": full_input
 })
 
