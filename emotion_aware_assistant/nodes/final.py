@@ -7,37 +7,37 @@ def final_response_node(state: GraphState) -> GraphState:
     user_profile = state.get("user_profile", "You appreciate warmth and gentle encouragement.")
 
     if tool_output:
-        system_message = f"""
-You are an emotionally intelligent assistant.
+        prompt = ChatPromptTemplate.from_messages([
+            SystemMessagePromptTemplate.from_template("""You are an emotionally intelligent assistant.
+
 {user_profile}
+
 The user's request has already been handled.
 
-Here’s what happened: {state.get('tool_result')}
+Here’s what happened: {tool_result}
 
 Your job is to repeat this back to the user in a friendly, human tone.
 
 If the tool result includes a link (like a calendar event), include it **as-is** in the response.
 
 Do NOT write [insert calendar link here] — actually use the full link inside your message.
-""".strip()
-
-        prompt = ChatPromptTemplate.from_messages([
-            SystemMessage(content=system_message),
-            HumanMessage(content="{input}")
+"""),
+            HumanMessagePromptTemplate.from_template("{input}")
         ])
 
         response = (prompt | llm).invoke({
-    "input": state["input"],
-    "tool_result": tool_output
-})
+            "input": state.get("input", ""),
+            "tool_result": tool_output,
+            "user_profile": user_profile
+        })
+
         print("🧠 Final LLM Output:", response.content)
         final_message = getattr(response, 'content', None) or getattr(response, 'text', None) or str(response)
         print("🗣️ FINAL RESPONSE STORED:", final_message)
 
-
         return {
             **state,
-            "final_response": response.content
+            "final_response": final_message
         }
 
     else:
