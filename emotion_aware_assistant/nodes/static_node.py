@@ -27,21 +27,25 @@ Be warm and curious.
     }
     
 def welcome_node(state: GraphState) -> GraphState:
-    welcome_message = """
+    user_input = state.get("input", "").strip()
+
+    if not user_input:
+        welcome_message = """
 👋 Hey there! I’m your emotionally aware productivity assistant.
 
 Here’s what I can help you with:
-- 🧠 Understand how you're feeling and respond gently
-- 🔔 Set reminders for important tasks
-- 📅 Schedule or reschedule calendar events
-- 💬 Let you vent or talk things through
-- ✅ Help you prioritize when you're overwhelmed
+- 🧠 Understand how you're feeling and respond gently  
+- 🔔 Set reminders for important tasks  
+- 📅 Schedule or reschedule calendar events  
+- 💬 Let you vent or talk things through  
+- ✅ Help you prioritize when you're overwhelmed  
 - 🧭 Give advice, answer questions, or just chat
 
 Just tell me what’s on your mind, and I’ll take it from there.
 """
+        return {
+            **state,
+            "final_response": welcome_message
+        }
 
-    return {
-        **state,
-        "final_response": welcome_message
-    }
+    return state  
