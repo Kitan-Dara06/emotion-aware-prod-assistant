@@ -36,12 +36,12 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
         print("🗣️ FINAL RESPONSE STORED:", final_message)
 
         return {
-            **state,
+            **state.dict(),
             "final_response": final_message
         }
 
     else:
         return {
-            **state,
+            **state.dict(),
             "final_response": state.response_before_tool or "I'm here if you need anything else."
         }
