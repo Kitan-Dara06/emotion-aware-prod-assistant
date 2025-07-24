@@ -118,7 +118,7 @@ def read_root():
 
 
 @app.post("/chat")
-def run_graph(user_input: UserInput):
+def run_graph(user_input: str):
     print("Incoming request:")
     print(user_input)
 
