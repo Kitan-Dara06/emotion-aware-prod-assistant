@@ -41,30 +41,30 @@ def answer_question_node(state : GraphState) -> GraphState:
   user_profile = state.get("user_profile", "You prefer warm, human responses.")
   prompt = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("""
-You are an emotionally aware assistant helping answer user questions thoughtfully and clearly.
+      You are an emotionally aware assistant helping answer user questions thoughtfully and clearly.
 
-Context about the user:
-{user_profile}
+         Context about the user:
+    {user_profile}
 
-Here is the question the user just asked:
-\"\"\"{input}\"\"\"
+          Here is the question the user just asked:
+    \"\"\"{input}\"\"\"
 
-Use a supportive tone and give a clear, helpful response.
-Avoid hallucinating or changing the topic.
-"""),
-    HumanMessagePromptTemplate.from_template("{joined_input}")
+         Use a supportive tone and give a clear, helpful response.
+       Avoid hallucinating or changing the topic.
+          """),
+            HumanMessagePromptTemplate.from_template("{joined_input}")
 ])
 
-response = (prompt | llm).invoke({
+  response = (prompt | llm).invoke({
     "input": state["input"],
     "user_profile": state.get("user_profile", ""),
     "joined_input": full_input
 })
 
-final_summary = cleanly_truncate(response.content)
-final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
+  final_summary = cleanly_truncate(response.content)
+  final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
 
-return {
+  return {
     **state,
     "tool_result": None,
     "final_response": final_summary
