@@ -122,7 +122,7 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 def continue_conversation_node(state : GraphState) -> GraphState:
   full_input = "\n".join( [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
   user_profile = state.get("user_profile", "You prefer warm, human responses.")
-  emotion = state.get("emotion", "")
+  emotion = state."emotion" or ""
   prompt = ChatPromptTemplate.from_messages([
       SystemMessagePromptTemplate.from_template("""You are a caring assistant continuing a heartfelt conversation.
 
