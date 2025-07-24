@@ -39,7 +39,7 @@ def answer_question_node(state : GraphState) -> GraphState:
   full_input = "\n".join(
     [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
   user_profile = state.get("user_profile", "You prefer warm, human responses.")\
-    prompt = ChatPromptTemplate.from_messages([
+  prompt = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("""
 You are an emotionally aware assistant helping answer user questions thoughtfully and clearly.
 
