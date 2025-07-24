@@ -4,6 +4,7 @@ from emotion_aware_assistant.gloabal_import import *
 
 
 def respond_with_empathy_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
     user_input = (state.input or "").strip()
     history = state.history or []
     emotion_history = state.emotion_history or []
