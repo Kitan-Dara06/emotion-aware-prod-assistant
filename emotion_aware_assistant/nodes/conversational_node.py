@@ -6,9 +6,11 @@ from emotion_aware_assistant.utils.trim import cleanly_truncate
 from emotion_aware_assistant.utils.trim import trim_to_last_full_sentence
 def vent_node(state: GraphState) -> GraphState:
     user_profile = state.get("user_profile", "You prefer warm, human responses.")
-    full_input = "\n".join(state.get("history", []) + [state["input"]])
+    full_input = "\n".join(
+    [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]]
+)
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=f"""
+        SystemMessagePromptTemplate.from_template("""
   You're a compassionate and emotionally intelligent assistant.
   {user_profile}
   You're a safe space for users to express their emotions.
@@ -20,10 +22,12 @@ The user just wants to vent and express their emotions.
 Let them feel heard  don't interrupt or problem-solve.
 Validate what they’re saying and gently offer support if appropriate.
 """),
-        HumanMessage(content="{joined_input}")
+        
+        HumanMessagePromptTemplate.from_template("{joined_input}")
     ])
 
-    response = (prompt | llm).invoke({"joined_input": full_input})
+    response = (prompt | llm).invoke({"joined_input": full_input,
+                                     "user_profile": "You prefer warm, validating responses." })
 
     return {
         **state,
@@ -32,36 +36,40 @@ Validate what they’re saying and gently offer support if appropriate.
     }
 
 def answer_question_node(state : GraphState) -> GraphState:
-  full_input = "\n".join(state.get("history", []) + [state["input"]])
-  user_profile = state.get("user_profile", "You prefer warm, human responses.")
-  prompt = ChatPromptTemplate.from_messages([
-      SystemMessage(content = f"""
+  full_input = "\n".join(
+    [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
+  user_profile = state.get("user_profile", "You prefer warm, human responses.")\
+    prompt = ChatPromptTemplate.from_messages([
+    SystemMessagePromptTemplate.from_template("""
 You are an emotionally aware assistant helping answer user questions thoughtfully and clearly.
 
 Context about the user:
-{state.get("user_profile", "")}
+{user_profile}
 
 Here is the question the user just asked:
-\"\"\"{state['input']}\"\"\"
+\"\"\"{input}\"\"\"
 
 Use a supportive tone and give a clear, helpful response.
 Avoid hallucinating or changing the topic.
 """),
-      HumanMessage(content= "{joined_input}")
+    HumanMessagePromptTemplate.from_template("{joined_input}")
+])
 
-  ])
+response = (prompt | llm).invoke({
+    "input": state["input"],
+    "user_profile": state.get("user_profile", ""),
+    "joined_input": full_input
+})
 
-  response = (prompt |llm ).invoke({"joined_input": full_input})
-  final_summary = cleanly_truncate(response.content)
-  final_summary = trim_to_last_full_sentence(final_summary, word_limit= 150)
+final_summary = cleanly_truncate(response.content)
+final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
 
-  return {
-        **state,
-        "tool_result": None,
-        "final_response": final_summary
-    }
-
-
+return {
+    **state,
+    "tool_result": None,
+    "final_response": final_summary
+}
+    
 
 def do_nothing_node(state: GraphState) -> GraphState:
     full_input = "\n".join(
@@ -70,14 +78,15 @@ def do_nothing_node(state: GraphState) -> GraphState:
     user_profile = state.get("user_profile", "You prefer warm, human responses.")
 
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=f"""The user just said something casual or friendly, like a joke, meme, or light comment.
+        SystemMessagePromptTemplate.from_template("""The user just said something casual or friendly, like a joke, meme, or light comment.
 {user_profile}
 Respond in a relaxed, human tone. Acknowledge their message, and if it feels natural, ask a playful follow-up or express curiosity.
 No advice or emotion processing here — just chill, friendly chat like you'd have with someone close."""),
-        HumanMessage(content="{joined_input}")
+ HumanMessagePromptTemplate.from_template("{joined_input}")
     ])
 
-    response = (prompt | llm).invoke({"joined_input": full_input})
+    response = (prompt | llm).invoke({"joined_input": full_input,
+                                      "user_profile": "You prefer warm, validating responses." })
 
     return {
         **state,
@@ -87,7 +96,7 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
 
 
 def give_advice_node(state : GraphState) -> GraphState:
-  full_input = "\n".join(state.get("history", []) + [state["input"]])
+  full_input = "\n".join(  [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
   prompt = ChatPromptTemplate.from_messages([
       SystemMessage(
             content = f"""The user is asking for advice on what to do in their situation.
@@ -100,7 +109,7 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
   ])
 
-  response = (prompt |llm ).invoke({"joined_input": full_input})
+  response = (prompt |llm ).invoke({"joined_input": full_input},)
 
   return {
         **state,
@@ -111,21 +120,24 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
 
 def continue_conversation_node(state : GraphState) -> GraphState:
-  full_input = "\n".join(state.get("history", []) + [state["input"]])
+  full_input = "\n".join( [h for h in state.get("history", []) if isinstance(h, str)] + [state["input"]])
   user_profile = state.get("user_profile", "You prefer warm, human responses.")
+  emotion = state.get("emotion", "")
   prompt = ChatPromptTemplate.from_messages([
-      SystemMessage(content ="""You are a caring assistant continuing a heartfelt conversation.
+      SystemMessagePromptTemplate.from_template("""You are a caring assistant continuing a heartfelt conversation.
 
 The user's current emotion is: {emotion}
 Your job is to keep the conversation flowing naturally with empathy.
 
 Be warm, emotionally aware, and ask a gentle follow-up.
 Do not give advice or solutions here  just invite them to share more."""),
-      HumanMessage(content= "{joined_input}")
+    HumanMessagePromptTemplate.from_template("{joined_input}")
+      
 
   ])
 
-  response = (prompt |llm ).invoke({"joined_input": full_input})
+  response = (prompt |llm ).invoke({"joined_input": full_input,
+                                    "emotion": emotion, "user_profile": user_profile})
 
   return {
         **state,
