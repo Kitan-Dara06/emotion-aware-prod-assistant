@@ -3,8 +3,8 @@ from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 
 def final_response_node(state: GraphState) -> GraphState:
-    tool_output = state.get("tool_result")
-    user_profile = state.get("user_profile", "You appreciate warmth and gentle encouragement.")
+    tool_output = state.tool_result
+    user_profile = state.user_profile or "You appreciate warmth and gentle encouragement."
 
     if tool_output:
         prompt = ChatPromptTemplate.from_messages([
@@ -26,7 +26,7 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
         ])
 
         response = (prompt | llm).invoke({
-            "input": state.get("input", ""),
+            "input": state.input or "",
             "tool_result": tool_output,
             "user_profile": user_profile
         })
@@ -43,5 +43,5 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
     else:
         return {
             **state,
-            "final_response": state.get("response_before_tool", "I'm here if you need anything else.")
+            "final_response": state.response_before_tool or "I'm here if you need anything else."
         }
