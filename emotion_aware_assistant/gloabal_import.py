@@ -1,4 +1,6 @@
 from typing import TypedDict, List, Optional, Dict
+from pydantic import BaseModel
+
 from datetime import datetime, timedelta
 import pytz
 import dateparser
