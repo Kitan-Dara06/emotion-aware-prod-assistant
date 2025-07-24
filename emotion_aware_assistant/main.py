@@ -115,10 +115,7 @@ app.add_middleware(
 def read_root():
     return {"message": "Emotion-Aware Assistant is live 🚀"}
 
-# ✅ Handle CORS preflight manually
-@app.options("/chat")
-async def preflight_handler(request: Request):
-    return JSONResponse(content={}, status_code=200)
+
 
 class UserInput(BaseModel):
     input: str
