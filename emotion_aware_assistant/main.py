@@ -110,6 +110,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.options("/chat")
+def preflight_check():
+    return {"message": "Preflight passed"}
 
 @app.get("/")
 def read_root():
