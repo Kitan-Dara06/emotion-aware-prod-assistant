@@ -39,7 +39,7 @@ work_state.add_node('do_nothing_node',do_nothing_node)
 work_state.add_node('summarize_input_node',summarize_input_node)
 work_state.add_node('reschedule_node', Reschedule_node)
 work_state.add_node("final_response_node", final_response_node)
-work_state.add_node("user_profile_node", user_profile_node)
+# work_state.add_node("user_profile_node", user_profile_node)
 work_state.add_node("fallback_node", fallback_node)
 
 work_state.add_conditional_edges(
@@ -75,9 +75,9 @@ work_state.add_conditional_edges("post_overwhelm_router_node", post_overwhelm_ro
 work_state.set_entry_point("welcome_node")
 work_state.set_finish_point('final_response_node')
 
-work_state.add_edge("welcome_node", "user_profile_node")
-work_state.add_edge("user_profile_node", "respond_with_empathy")
-
+# work_state.add_edge("welcome_node", "user_profile_node")
+# work_state.add_edge("user_profile_node", "respond_with_empathy")
+work_state.add_edge("welcome_node", "respond_with_empathy")
 work_state.add_edge("overwhelm_node", "post_overwhelm_router_node")
 work_state.add_edge("prioritize_tasks_node", "final_response_node")
 work_state.add_edge('reminder_node', 'final_response_node')
@@ -131,17 +131,19 @@ def run_graph(user_input: UserInput):
     print("Incoming request:")
     print(user_input)
 
-    initial_state = {
-        "input": user_input.input,
-        "user_profile": user_input.user_profile,
-        "history": user_input.history,
-        "emotion_history": user_input.emotion_history
-    }
-
     try:
+        initial_state = {
+            "input": user_input.input,
+            "user_profile": user_input.user_profile,
+            "history": user_input.history,
+            "emotion_history": user_input.emotion_history,
+        }
         result = graph_app.invoke(initial_state)
-        print("Graph Result:", result)
         return result
+
     except Exception as e:
-        print("Error during graph invocation:", e)
-        return {"final_response": "Sorry, something went wrong."}
+        print("Graph Error:", e)
+        return JSONResponse(
+            status_code=500,
+            content={"final_response": "Oops! Something went wrong on our side. Please try again."}
+        )
