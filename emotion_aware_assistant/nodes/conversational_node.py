@@ -7,6 +7,8 @@ from emotion_aware_assistant.utils.trim import trim_to_last_full_sentence
 
 def vent_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
 
     user_profile = state.user_profile or "You prefer warm, human responses."
 
@@ -42,9 +44,10 @@ Validate what they’re saying and gently offer support if appropriate.
     }
 
 def answer_question_node(state : GraphState) -> GraphState:
-  state = ensure_graph_state(state)  
-  full_input = "\n".join(
-    [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
+  state = ensure_graph_state(state)
+  print("💥 DEBUG: State type:", type(state))
+  print("💥 DEBUG: State content:", state)
+  full_input = "\n".join( [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])  
   user_profile = state.user_profile or "You prefer warm, human responses."
   prompt = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("""
@@ -79,7 +82,9 @@ def answer_question_node(state : GraphState) -> GraphState:
     
 
 def do_nothing_node(state: GraphState) -> GraphState:
-    state = ensure_graph_state(state)  
+    state = ensure_graph_state(state) 
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     full_input = "\n".join(
        [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""]
 )
@@ -104,8 +109,11 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
 
 
 def give_advice_node(state : GraphState) -> GraphState:
-  full_input = "\n".join(  [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
   state = ensure_graph_state(state)  
+  print("💥 DEBUG: State type:", type(state))
+  print("💥 DEBUG: State content:", state)
+  full_input = "\n".join(  [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
+  
   prompt = ChatPromptTemplate.from_messages([
       SystemMessage(
             content = f"""The user is asking for advice on what to do in their situation.
@@ -129,7 +137,9 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
 
 def continue_conversation_node(state : GraphState) -> GraphState:
-  state = ensure_graph_state(state)  
+  state = ensure_graph_state(state)
+  print("💥 DEBUG: State type:", type(state))
+  print("💥 DEBUG: State content:", state)
   full_input = "\n".join( [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
   user_profile = state.user_profile or "You prefer warm, human responses."
   emotion = state.emotion or ""
@@ -156,8 +166,10 @@ Do not give advice or solutions here  just invite them to share more."""),
     }
   
 def fetch_info_node(state: GraphState) -> GraphState:
-    user_input = (state.input or "").strip()
     state = ensure_graph_state(state)  
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
+    user_input = (state.input or "").strip()
     history = state.history or []
     user_profile = state.user_profile or "You prefer warm, human responses."
 
@@ -219,6 +231,8 @@ User profile: {user_profile}
     
 def summarize_input_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     user_input = state.input or ""
 
     if len(user_input.split()) > 500:
