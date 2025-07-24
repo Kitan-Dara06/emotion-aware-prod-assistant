@@ -1,6 +1,7 @@
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
+from emotion_aware_assistant.utils.ensure_state import ensure_graph_state
 
 def final_response_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
