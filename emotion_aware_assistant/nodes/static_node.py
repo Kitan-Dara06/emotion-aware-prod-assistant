@@ -27,7 +27,7 @@ Be warm and curious.
     }
     
 def welcome_node(state: GraphState) -> GraphState:
-    user_input = state.get("input", "").strip()
+    user_input = state.input.strip() if state.input else ""
 
     if not user_input:
         welcome_message = """
@@ -43,9 +43,6 @@ Here’s what I can help you with:
 
 Just tell me what’s on your mind, and I’ll take it from there.
 """
-        return {
-            **state,
-            "final_response": welcome_message
-        }
+        return state.copy(update={"final_response": welcome_message})
 
-    return state  
+    return state
