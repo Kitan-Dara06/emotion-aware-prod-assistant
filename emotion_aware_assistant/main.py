@@ -124,14 +124,22 @@ def run_graph(user_input: str):
 
     try:
         initial_state = {
-            "input": user_input.input,
-            "user_profile": user_input.user_profile,
-            "history": user_input.history,
-            "emotion_history": user_input.emotion_history,
+            "input": user_input,
+            "user_profile": None,
+            "history": [],
+            "emotion_history": [],
+            "emotion": None,
+            "goal": None,
+            "suggested_action": None,
+            "response": None,
+            "reminder": [],
+            "schedule_event": [],
+            "reschedule_event": [],
+            "tool_result": None,
         }
 
-        if not user_input.input.strip():
-            return welcome_node(initial_state)  # Pass real state here
+        if not user_input.strip():
+            return welcome_node(initial_state)
 
         result = graph_app.invoke(initial_state)
         return result
