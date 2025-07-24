@@ -20,7 +20,7 @@ def fallback_node(state: GraphState) -> GraphState:
 
 
 
-work_state.add_node("welcome_node", welcome_node)
+# work_state.add_node("welcome_node", welcome_node)
 work_state.add_node('respond_with_empathy', respond_with_empathy_node)
 work_state.add_node('reminder_node', Reminder_node)
 work_state.add_node("overwhelm_node", overwhelm_node)
@@ -72,12 +72,12 @@ work_state.add_conditional_edges("post_overwhelm_router_node", post_overwhelm_ro
 
 
 # work_state.set_entry_point("user_profile_node")
-work_state.set_entry_point("welcome_node")
+work_state.set_entry_point("respond_with_empathy")
 work_state.set_finish_point('final_response_node')
 
 # work_state.add_edge("welcome_node", "user_profile_node")
 # work_state.add_edge("user_profile_node", "respond_with_empathy")
-work_state.add_edge("welcome_node", "respond_with_empathy")
+# work_state.add_edge("welcome_node", "respond_with_empathy")
 work_state.add_edge("overwhelm_node", "post_overwhelm_router_node")
 work_state.add_edge("prioritize_tasks_node", "final_response_node")
 work_state.add_edge('reminder_node', 'final_response_node')
@@ -117,12 +117,6 @@ def read_root():
 
 
 
-class UserInput(BaseModel):
-    input: str
-    user_profile: str = "You prefer warm, validating responses."
-    history: list[str] = []
-    emotion_history: list = []
-
 @app.post("/chat")
 def run_graph(user_input: UserInput):
     print("Incoming request:")
@@ -135,6 +129,10 @@ def run_graph(user_input: UserInput):
             "history": user_input.history,
             "emotion_history": user_input.emotion_history,
         }
+
+        if not user_input.input.strip():
+            return welcome_node(initial_state)  # Pass real state here
+
         result = graph_app.invoke(initial_state)
         return result
 
