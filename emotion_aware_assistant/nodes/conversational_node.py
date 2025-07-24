@@ -1,7 +1,7 @@
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
-from emotion_aware_assistant.utils.ensure_state import ensure_graph_state  
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state  
 from emotion_aware_assistant.utils.trim import cleanly_truncate
 from emotion_aware_assistant.utils.trim import trim_to_last_full_sentence
 
