@@ -12,25 +12,18 @@ def vent_node(state: GraphState) -> GraphState:
     print("🔍 state content:", state)
     user_profile = state.user_profile or "You prefer warm, human responses."
 
-    full_input = "\n".join(
-        [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""]
-    )
-
+    full_input = "\n".join( [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""] )
     prompt = ChatPromptTemplate.from_messages([
         SystemMessagePromptTemplate.from_template("""
-You're a compassionate and emotionally intelligent assistant.
-{user_profile}
-You're a safe space for users to express their emotions.
-
-The user is venting. Don’t try to fix or explain anything. Just reflect their feelings and validate them.
-
-Be gentle, nonjudgmental, and empathetic. Let them feel seen.
-The user just wants to vent and express their emotions.
-Let them feel heard. Don't interrupt or problem-solve.
-Validate what they’re saying and gently offer support if appropriate.
-        """),
-        HumanMessagePromptTemplate.from_template("{joined_input}")
-    ])
+          You're a compassionate and emotionally intelligent assistant.
+          {user_profile}
+          You're a safe space for users to express their emotions.
+          The user is venting. Don’t try to fix or explain anything. Just reflect their feelings and validate them.
+         Be gentle, nonjudgmental, and empathetic. Let them feel seen.
+        The user just wants to vent and express their emotions.
+       Let them feel heard. Don't interrupt or problem-solve.
+         Validate what they’re saying and gently offer support if appropriate.   """),
+        HumanMessagePromptTemplate.from_template("{joined_input}")])
 
     response = (prompt | llm).invoke({
         "joined_input": full_input,
