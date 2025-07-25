@@ -7,6 +7,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
     user_input = (state.input or "").strip()
     history = state.history or []
     emotion_history = state.emotion_history or []
