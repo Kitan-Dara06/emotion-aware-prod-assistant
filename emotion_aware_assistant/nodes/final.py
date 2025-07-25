@@ -39,10 +39,9 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
         final_message = getattr(response, 'content', None) or getattr(response, 'text', None) or str(response)
         print("🗣️ FINAL RESPONSE STORED:", final_message)
 
-        return GraphState(
-            **state.dict(),
-            final_response = final_message
-        )
+        new_state = state.dict()
+        new_state["final_response"] = final_message
+        return GraphState(**new_state)
     else:
         return GraphState(
             **state.dict(),
