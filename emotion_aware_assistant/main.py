@@ -120,11 +120,12 @@ def read_root():
 
 
 @app.post("/chat")
+
 def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
 
     try:
-        result = graph_app.invoke(state.model_dump())
+        result = graph_app.invoke(state) 
         return result
     except Exception as e:
         print("Graph Error:", e)
