@@ -2,7 +2,10 @@ from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.calendar import create_event
-def scheduleEvent(full_input : str):
+import re, json
+from langchain_core.prompts import ChatPromptTemplate
+
+def scheduleEvent(full_input: str):
     Schedule_prompt = ChatPromptTemplate.from_messages([
         ("system", """
 Only return a valid JSON with two fields:
@@ -29,37 +32,43 @@ DO NOT add any explanation or extra text.
         if not match:
             raise ValueError("No JSON object found.")
         parsed = json.loads(match.group())
-        if "time" not in parsed  or not  parsed['time']:
-          return {"error": "Can you be more specific about when?", "raw_output": raw_output.content[:1000]}
+        if "time" not in parsed or not parsed["time"]:
+            return {
+                "error": "Can you be more specific about when?",
+                "raw_output": raw_output.content[:1000]
+            }
         return parsed
     except Exception as e:
-        return {"error": str(e), "raw_output": raw_output.content[:1000]}
+        return {
+            "error": str(e),
+            "raw_output": raw_output.content[:1000]
+        }
 
 def Schedule_node(state: GraphState) -> GraphState:
-    history = state.get("history", [])[-4:]
-    full_input = "\n".join(history + [state["input"]])
+    history = state.history[-4:]
+    full_input = "\n".join(history + [state.input])
     schedule_result = scheduleEvent(full_input)
     print("📦 scheduleEvent returned:", schedule_result)
 
     if "error" in schedule_result:
-        return {
-            **state,
-            "tool_result": "Sorry, I couldn't understand what you want to schedule.",
-             "history": history + [state["input"]]
-        }
+        return GraphState(
+            **state.dict(),
+            tool_result="Sorry, I couldn't understand what you want to schedule.",
+            history=history + [state.input]
+        )
 
     schedule_event = schedule_result.get('event', 'an event')
     schedule_time = schedule_result.get('time', 'sometime')
 
-    # Call your tool here (or just mock it)
     tool_result = create_event(schedule_event, schedule_time)
-    updated_events = state.get("schedule_event", []) + [
+
+    updated_events = state.schedule_event + [
         {"event": schedule_event, "time": schedule_time}
     ]
 
-    return {
-        **state,
-        "schedule_event": updated_events,
-        'tool_result': tool_result,
-        "history": history + [state["input"]]
-    }
+    return GraphState(
+        **state.dict(),
+        schedule_event=updated_events,
+        tool_result=tool_result,
+        history=history + [state.input]
+    )
