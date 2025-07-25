@@ -3,8 +3,12 @@ from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.calendar import get_calendar_service
 from emotion_aware_assistant.services.calendar import fetch_upcoming_events
 from emotion_aware_assistant.services.llm_model import llm
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 def overwhelm_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     service = get_calendar_service()
     upcoming_events = fetch_upcoming_events(service)
 
@@ -19,7 +23,7 @@ def overwhelm_node(state: GraphState) -> GraphState:
     user_profile = state.get("user_profile", "You prefer warm, emotionally supportive responses.")
 
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=f"""
+        SystemMessagePromptTemplate.from_template("""
 You're an emotionally aware assistant. The user is feeling overwhelmed.
 
 The user values this support style: {user_profile}
@@ -32,24 +36,21 @@ You'll receive a list of upcoming tasks.
 
 Be validating, calm, and encouraging.
 """),
-        HumanMessage(content=f"""
+        HumanMessagePromptTemplate.from_template("""
 Here are the user's upcoming tasks:
 
 {joined_tasks}
 """)
     ])
 
-    response = (prompt | llm).invoke({"joined_tasks": joined_tasks})
+    response = (prompt | llm).invoke({"joined_tasks": joined_tasks, 
+                                     "user_profile": user_profile})
 
-    return {
-        **state,
+    return GraphState(
+        **state.dict(),
         "awaiting_user_confirmation": True,
           "post_overwhelm": True,
         "tool_result": None,
         "final_response": response.content.strip()
-
-
-
-
-    }
+)
 
