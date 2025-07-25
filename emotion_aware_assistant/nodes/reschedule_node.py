@@ -5,6 +5,7 @@ from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.calendar import update_calendar_event
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 def rescheduleEvent(full_input: str):
   # structured_result = llm.with_structured_output(schema=RescheduleEventInput)
@@ -40,7 +41,11 @@ No extra text. No explanation. Just valid JSON.
 
 
 def Reschedule_node(state: GraphState) -> GraphState:
-    history = state.history[-4:]  # use attribute access
+  
+    history = state.history[-4:]
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     full_input = "\n".join(history + [state.input])
 
     reschedule_result = rescheduleEvent(full_input)
