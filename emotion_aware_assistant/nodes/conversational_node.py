@@ -38,9 +38,10 @@ Validate what they’re saying and gently offer support if appropriate.
     })
 
     return GraphState(
-        **state.dict(),  
-        "tool_result": None,
-        "final_response": response.content
+              **state.dict(),
+        tool_result= None,
+        final_response = response.content
+
     )
 
 def answer_question_node(state : GraphState) -> GraphState:
@@ -66,8 +67,8 @@ def answer_question_node(state : GraphState) -> GraphState:
 ])
 
   response = (prompt | llm).invoke({
-    "input": state.input,
-    "user_profile": state.user_profile or "",
+    "input" : state.input,
+    "user_profile" : state.user_profile or "",
     "joined_input": full_input
 })
 
@@ -76,8 +77,9 @@ def answer_question_node(state : GraphState) -> GraphState:
 
   return GraphState(
     **state.dict(),
-    "tool_result": None,
-    "final_response": final_summary
+    tool_result = None,
+    final_response = final_summary,
+      
   )
     
 
@@ -102,9 +104,10 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
                                       "user_profile": user_profile })
 
     return GraphState(
-        **state.dict(),
-        "tool_result": None,
-        "final_response": response.content
+          **state.dict(),
+        tool_result = None,
+        final_response = response.content,
+ 
     )
 
 
@@ -115,23 +118,23 @@ def give_advice_node(state : GraphState) -> GraphState:
   full_input = "\n".join(  [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
   
   prompt = ChatPromptTemplate.from_messages([
-      SystemMessage(
-            content = f"""The user is asking for advice on what to do in their situation.
+      SystemMessagePromptTemplate.from_template("""The user is asking for advice on what to do in their situation.
 
 Give a thoughtful, emotionally aware answer. It’s okay to offer some light direction — just don’t be forceful.
 
 Gently guide them by highlighting trade-offs or options. Encourage reflection while offering support.
 """),
-      HumanMessage(content= "{joined_input}")
+      HumanMessagePromptTemplate.from_template("{joined_input}")
 
   ])
 
   response = (prompt |llm ).invoke({"joined_input": full_input},)
 
   return GraphState(
-        **state.dict(),
-        "tool_result": None,
-        "final_response": response.content
+       **state.dict(),
+        tool_result = None,
+        final_response = response.content,
+   
     )
 
 
@@ -142,7 +145,7 @@ def continue_conversation_node(state : GraphState) -> GraphState:
   print("💥 DEBUG: State content:", state)
   full_input = "\n".join( [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
   user_profile = state.user_profile or "You prefer warm, human responses."
-  emotion = state.emotion or ""
+  emotion = getattr(state, "emotion", "") or ""
   prompt = ChatPromptTemplate.from_messages([
       SystemMessagePromptTemplate.from_template("""You are a caring assistant continuing a heartfelt conversation.
 
@@ -161,8 +164,9 @@ Do not give advice or solutions here  just invite them to share more."""),
 
   return GraphState(
         **state.dict(),
-        "tool_result": None,
-        "final_response": response.content
+        tool_result = None,
+        final_response = response.content,
+   
 )
   
 def fetch_info_node(state: GraphState) -> GraphState:
@@ -175,14 +179,12 @@ def fetch_info_node(state: GraphState) -> GraphState:
 
     # Validate input
     if not user_input:
-        return {
+        return GraphState (
             **state.dict(),
-            "tool_result": None,
-            "final_response": (
-                "It seems like your message wasn’t complete. "
-                "Could you tell me more about what you need help with?"
-            )
-        }
+            tool_result = None,
+            final_response="It seems like your message wasn’t complete. Could you tell me more about what you need help with?",
+            
+        )
 
     
     full_input = "\n".join(history + [user_input])
@@ -197,7 +199,7 @@ def fetch_info_node(state: GraphState) -> GraphState:
 
     
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=f"""
+        SystemMessagePromptTemplate.from_template("""
 You’re an assistant who provides helpful, emotionally aware information.
 
 The user wants facts, suggestions, or resources.
@@ -212,21 +214,22 @@ User profile: {user_profile}
 
    
     try:
-        response = chain.invoke({"joined_input": full_input})
+        response = chain.invoke({"joined_input": full_input,
+                                "user_profile": user_profile})
         final_response = response.content.strip()
         clean_output = trim_to_last_full_sentence(final_response, word_limit=150)
 
     except Exception as e:
-        return {
+        return GraphState(
             **state.dict(),
-            "tool_result": None,
-            "final_response": f"⚠️ Error during info fetch: {str(e)}"
-        }
+            tool_result = None,
+            final_response = f"⚠️ Error during info fetch: {str(e)}"
+        )
 
     return GraphState(
         **state.dict(),
-        "tool_result": None,
-        "final_response": clean_output
+        tool_result = None,
+        final_response = clean_output
     )
     
 def summarize_input_node(state: GraphState) -> GraphState:
@@ -236,14 +239,14 @@ def summarize_input_node(state: GraphState) -> GraphState:
     user_input = state.input or ""
 
     if len(user_input.split()) > 500:
-        return {
+        return GraphState(
             **state.dict(),
-            "tool_result": None,
-            "final_response": (
+            tool_result = None,
+            final_response= (
                 "That’s quite a lot to process at once. "
                 "Could you shorten it to under 500 words so I can better understand and help?"
             )
-        }
+        )
 
     summarizer_llm = ChatOpenAI(
         model="gpt-4o",
@@ -253,7 +256,7 @@ def summarize_input_node(state: GraphState) -> GraphState:
     )
 
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content="""
+        SystemMessagePromptTemplate.from_template("""
 You help users process big thoughts clearly.
 
 Summarize what the user shared into a short, focused overview.
@@ -270,14 +273,14 @@ Be clear and emotionally aware, but don’t reflect past chats or context.
         
         final_summary = response.content.strip()
     except Exception as e:
-        return {
+        return GraphState(
             **state.dict(),
-            "tool_result": None,
-            "final_response": f"⚠️ Error during summarization: {str(e)}"
-        }
+            tool_result =None,
+            final_response  = f"⚠️ Error during summarization: {str(e)}"
+        )
 
     return GraphState(
         **state.dict(),
-        "tool_result": None,
-        "final_response": final_summary
+        tool_result = None,
+        final_response = final_summary
     )
