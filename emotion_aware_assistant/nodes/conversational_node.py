@@ -133,7 +133,7 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
 
 
-def continue_conversation_node(state: GraphState) -> GraphState:
+def continue_conversation_node_robust(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("🔍 node:", __name__)
     print("🔍 state type:", type(state))
@@ -141,7 +141,14 @@ def continue_conversation_node(state: GraphState) -> GraphState:
 
     full_input = "\n".join([h for h in state.history or [] if isinstance(h, str)] + [state.input or ""])
     user_profile = state.user_profile or "You prefer warm, human responses."
-    emotion = getattr(state, "emotion", "") or ""
+    
+    try:
+        emotion = state.emotion or ""
+        print(f"🔍 Emotion accessed successfully: '{emotion}'")
+    except AttributeError as e:
+        print(f"❌ Error accessing emotion: {e}")
+        print(f"🔍 State attributes: {dir(state)}")
+        emotion = ""
 
     prompt = ChatPromptTemplate.from_messages([
         SystemMessagePromptTemplate.from_template(
@@ -151,7 +158,7 @@ The user's current emotion is: {emotion}
 Your job is to keep the conversation flowing naturally with empathy.
 
 Be warm, emotionally aware, and ask a gentle follow-up.
-Do not give advice or solutions here — just invite them to share more."""
+Do not give advice or solutions here  just invite them to share more."""
         ),
         HumanMessagePromptTemplate.from_template("{joined_input}")
     ])
@@ -167,7 +174,6 @@ Do not give advice or solutions here — just invite them to share more."""
         tool_result=None,
         final_response=response.content.strip()
     )
-
   
 def fetch_info_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
