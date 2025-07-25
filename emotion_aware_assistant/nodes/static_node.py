@@ -1,9 +1,13 @@
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 def user_profile_node(state: GraphState) -> GraphState:
     print("🧠 Entered user_profile_node with:", state)
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
 
     prompt = ChatPromptTemplate.from_messages([
         SystemMessage(content="""
@@ -30,6 +34,9 @@ Be warm and curious.
     
 def welcome_node(state: GraphState) -> GraphState:
     print("👋 Entered welcome_node with:", state)
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
 
     user_input = state.get("input", "").strip()
 
