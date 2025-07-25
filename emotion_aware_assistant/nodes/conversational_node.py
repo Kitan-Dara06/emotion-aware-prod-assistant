@@ -95,9 +95,7 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
  HumanMessagePromptTemplate.from_template("{joined_input}")
     ])
 
-    response = (prompt | llm).invoke({"joined_input": full_input,
-                                      "user_profile": user_profile })
-
+    response = (prompt | llm).invoke({"joined_input": full_input,"user_profile": user_profile })
     return GraphState(
           **state.dict(),
         tool_result = None,
@@ -170,15 +168,6 @@ Do not give advice or solutions here — just invite them to share more."""
         final_response=response.content.strip()
     )
 
-  response = (prompt |llm ).invoke({"joined_input": full_input,
-                                    "emotion": emotion, "user_profile": user_profile})
-
-  return GraphState(
-        **state.dict(),
-        tool_result = None,
-        final_response = response.content,
-   
-)
   
 def fetch_info_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
