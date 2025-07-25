@@ -7,8 +7,10 @@ from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 def overwhelm_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
-    print("💥 DEBUG: State type:", type(state))
-    print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
+    print("🔍 state type:", type(state))
+    print("🔍 state content:", state)
+
     service = get_calendar_service()
     upcoming_events = fetch_upcoming_events(service)
 
