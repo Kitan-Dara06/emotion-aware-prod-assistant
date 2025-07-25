@@ -6,6 +6,7 @@ from emotion_aware_assistant.services.calendar import get_calendar_service
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 def talk_only_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
+    print("🔍 node:", __name__)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
     user_profile = state.get("user_profile", "You appreciate warmth and gentle encouragement.")
@@ -36,6 +37,7 @@ def prioritize_tasks_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
     tasks = []
 
     # 1. Local memory reminders
