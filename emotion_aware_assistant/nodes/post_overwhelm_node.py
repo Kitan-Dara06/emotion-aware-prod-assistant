@@ -12,6 +12,8 @@ def post_overwhelm_router_node(state: GraphState) -> Literal[
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
+
     followup = (getattr(state, "input", "") or "").lower()
 
     if getattr(state, "awaiting_user_confirmation", False):
