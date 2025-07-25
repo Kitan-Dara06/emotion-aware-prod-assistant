@@ -5,6 +5,8 @@ def Reminder_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
+
     history = state.history[-4:]  # ✅ access with dot notation
     full_input = "\n".join(history + [state.input])  # ✅
 
