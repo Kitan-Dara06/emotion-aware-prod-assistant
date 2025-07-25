@@ -50,6 +50,7 @@ def Schedule_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
     history = state.history[-4:]
     full_input = "\n".join(history + [state.input])
     schedule_result = scheduleEvent(full_input)
