@@ -9,11 +9,15 @@ work_state = StateGraph(GraphState)
 
 
 def fallback_node(state: GraphState) -> GraphState:
-    return {
-        **state,
-        "final_response": "Hmm... I wasn't sure how to help with that. Could you rephrase?",
-        "tool_result": None
-    }
+    state =ensure_graph_state(state)
+    print("🔍 node:", __name__)
+    print("🔍 state type:", type(state))
+    print("🔍 state content:", state)
+    return GraphState (
+        **state.dict(),
+        final_response = "Hmm... I wasn't sure how to help with that. Could you rephrase?",
+        tool_result = None
+    )
 
 
 
@@ -126,6 +130,7 @@ def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
     print("Incoming state 2:", type(state))
     state = ensure_graph_state(state)
+    print("🔍 node:", __name__)
     print("Incoming state:", state)
     print("Incoming state 2:", type(state))
       
