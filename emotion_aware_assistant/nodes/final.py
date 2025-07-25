@@ -7,6 +7,7 @@ def final_response_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    
     tool_output = state.tool_result
     user_profile = state.user_profile or "You appreciate warmth and gentle encouragement."
 
@@ -35,15 +36,18 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
             "user_profile": user_profile
         })
 
-        print("🧠 Final LLM Output:", response.content)
         final_message = getattr(response, 'content', None) or getattr(response, 'text', None) or str(response)
-        print("🗣️ FINAL RESPONSE STORED:", final_message)
 
         new_state = state.dict()
         new_state["final_response"] = final_message
+        print("🗣️ FINAL RESPONSE STORED:", final_message)
+        print("🧪 FINAL RETURN TYPE:", type(new_state))
+        print("🧪 FINAL RETURN STATE:", new_state)
         return GraphState(**new_state)
+    
     else:
-        return GraphState(
-            **state.dict(),
-            final_response = state.response_before_tool or "I'm here if you need anything else."
-        )
+        new_state = state.dict()
+        new_state["final_response"] = state.response_before_tool or "I'm here if you need anything else."
+        print("🧪 FINAL RETURN TYPE:", type(new_state))
+        print("🧪 FINAL RETURN STATE:", new_state)
+        return GraphState(**new_state)
