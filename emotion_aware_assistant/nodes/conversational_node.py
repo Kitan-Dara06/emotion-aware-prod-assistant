@@ -37,11 +37,11 @@ Validate what they’re saying and gently offer support if appropriate.
         "user_profile": user_profile
     })
 
-    return {
+    return GraphState(
         **state.dict(),  
         "tool_result": None,
         "final_response": response.content
-    }
+    )
 
 def answer_question_node(state : GraphState) -> GraphState:
   state = ensure_graph_state(state)
@@ -74,11 +74,11 @@ def answer_question_node(state : GraphState) -> GraphState:
   final_summary = cleanly_truncate(response.content)
   final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
 
-  return {
+  return GraphState(
     **state.dict(),
     "tool_result": None,
     "final_response": final_summary
-}
+  )
     
 
 def do_nothing_node(state: GraphState) -> GraphState:
@@ -101,11 +101,11 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
     response = (prompt | llm).invoke({"joined_input": full_input,
                                       "user_profile": user_profile })
 
-    return {
+    return GraphState(
         **state.dict(),
         "tool_result": None,
         "final_response": response.content
-    }
+    )
 
 
 def give_advice_node(state : GraphState) -> GraphState:
@@ -128,11 +128,11 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
   response = (prompt |llm ).invoke({"joined_input": full_input},)
 
-  return {
+  return GraphState(
         **state.dict(),
         "tool_result": None,
         "final_response": response.content
-    }
+    )
 
 
 
@@ -159,11 +159,11 @@ Do not give advice or solutions here  just invite them to share more."""),
   response = (prompt |llm ).invoke({"joined_input": full_input,
                                     "emotion": emotion, "user_profile": user_profile})
 
-  return {
+  return GraphState(
         **state.dict(),
         "tool_result": None,
         "final_response": response.content
-    }
+)
   
 def fetch_info_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
@@ -223,11 +223,11 @@ User profile: {user_profile}
             "final_response": f"⚠️ Error during info fetch: {str(e)}"
         }
 
-    return {
+    return GraphState(
         **state.dict(),
         "tool_result": None,
         "final_response": clean_output
-    }
+    )
     
 def summarize_input_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
@@ -267,7 +267,7 @@ Be clear and emotionally aware, but don’t reflect past chats or context.
 
     try:
         response = chain.invoke({"input_text": user_input})
-        # print("📤 Raw response:", response)
+        
         final_summary = response.content.strip()
     except Exception as e:
         return {
@@ -276,8 +276,8 @@ Be clear and emotionally aware, but don’t reflect past chats or context.
             "final_response": f"⚠️ Error during summarization: {str(e)}"
         }
 
-    return {
+    return GraphState(
         **state.dict(),
         "tool_result": None,
         "final_response": final_summary
-    }
+    )
