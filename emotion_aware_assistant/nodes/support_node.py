@@ -3,7 +3,11 @@ from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.services.calendar import fetch_upcoming_events
 from emotion_aware_assistant.services.calendar import get_calendar_service
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 def talk_only_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     user_profile = state.get("user_profile", "You appreciate warmth and gentle encouragement.")
 
     prompt = ChatPromptTemplate.from_messages([
@@ -20,19 +24,22 @@ Adapt your tone based on this profile: {user_profile}
 
     response = (prompt | llm).invoke({})
 
-    return {
-        **state,
-        "final_response": response.content.strip(),
-        "tool_result": None,
-        "suggested_action": "talk_only",
-        "awaiting_user_confirmation": False
-    }
+    return GraphState(
+        **state.dict(),
+        final_response = response.content.strip(),
+        tool_result = None,
+        suggested_action = talk_only,
+        awaiting_user_confirmation = False
+    )
 
 def prioritize_tasks_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     tasks = []
 
     # 1. Local memory reminders
-    reminder = getattr(state, "reminder", None)
+   reminder = getattr(state, "reminder", []) or []
     for r in reminder:
         tasks.append((r["time"], f"🔔 {r['text']} at {r['time']}"))
 
@@ -55,8 +62,8 @@ def prioritize_tasks_node(state: GraphState) -> GraphState:
     ])
     response = (prompt | llm).invoke({})
 
-    return {
-        **state,
-        "tool_result": prioritized,
-        "final_response": response.content.strip()
-    }
+    return GraphState(
+        **state.dict(),
+        tool_result = prioritized,
+        final_response =  response.content.strip()
+    )
