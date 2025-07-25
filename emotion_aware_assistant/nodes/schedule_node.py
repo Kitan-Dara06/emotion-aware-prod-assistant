@@ -4,6 +4,8 @@ from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.calendar import create_event
 import re, json
 from langchain_core.prompts import ChatPromptTemplate
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
 
 def scheduleEvent(full_input: str):
     Schedule_prompt = ChatPromptTemplate.from_messages([
@@ -45,6 +47,9 @@ DO NOT add any explanation or extra text.
         }
 
 def Schedule_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     history = state.history[-4:]
     full_input = "\n".join(history + [state.input])
     schedule_result = scheduleEvent(full_input)
