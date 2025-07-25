@@ -1,7 +1,10 @@
 from emotion_aware_assistant.utils.helper import Reminder
 from emotion_aware_assistant.utils.types import GraphState
-
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 def Reminder_node(state: GraphState) -> GraphState:
+    state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     history = state.history[-4:]  # ✅ access with dot notation
     full_input = "\n".join(history + [state.input])  # ✅
 
