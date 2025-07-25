@@ -29,7 +29,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
       history.append(f"Assistant: {result.response or ''}")
 
 
-    return {
+    return GraphState(
           **state.dict(),  
     "emotion": result.emotion,
     "final_response": result.response,
@@ -41,4 +41,4 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
     "user_input": user_input,
     "awaiting_user_confirmation": getattr(state, "awaiting_user_confirmation", False),
     "post_overwhelm": getattr(state, "post_overwhelm", False),
-    }
+    )
