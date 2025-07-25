@@ -37,21 +37,33 @@ No extra text. No explanation. Just valid JSON.
   except Exception as e:
         return {"error": str(e), "raw_output": raw_output.content[:1000]}
 
-def Reschedule_node(state: GraphState)-> GraphState:
-  history = state.get("history", [])[:4]
-  full_input = "\n".join(history + [state["input"]])
-  reschedule_result = rescheduleEvent(full_input)
-  reschedule_event = reschedule_result['event']
-  reschedule_time = reschedule_result['new_time']
-  tool_result = update_calendar_event(reschedule_event, reschedule_time)
-  updated_event = state.get('schedule_event', []) + [
-      {'event': reschedule_event, 'time':reschedule_time}
-  ]
-  return{
-       **state,
-       'reschedule_event' :updated_event,
-       'tool_result' :tool_result,
-       "history": history + [state["input"]]
 
-   }
+
+def Reschedule_node(state: GraphState) -> GraphState:
+    history = state.history[-4:]  # use attribute access
+    full_input = "\n".join(history + [state.input])
+
+    reschedule_result = rescheduleEvent(full_input)
+
+    if "error" in reschedule_result:
+        return GraphState(
+            **state.dict(),
+            tool_result=f"⚠️ Could not extract reschedule info: {reschedule_result['error']}",
+            history=history + [state.input]
+        )
+
+    reschedule_event = reschedule_result['event']
+    reschedule_time = reschedule_result['new_time']
+    tool_result = update_calendar_event(reschedule_event, reschedule_time)
+
+    updated_event = state.schedule_event + [
+        {"event": reschedule_event, "time": reschedule_time}
+    ]
+
+    return GraphState(
+        **state.dict(),
+        reschedule_event=updated_event,
+        tool_result=tool_result,
+        history=history + [state.input]
+    )
 
