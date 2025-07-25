@@ -48,9 +48,9 @@ Here are the user's upcoming tasks:
 
     return GraphState(
         **state.dict(),
-        "awaiting_user_confirmation": True,
-          "post_overwhelm": True,
-        "tool_result": None,
-        "final_response": response.content.strip()
+        awaiting_user_confirmation = True,
+          post_overwhelm = True,
+        tool_result =None,
+        final_response = response.content.strip()
 )
 
