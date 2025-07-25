@@ -1,9 +1,9 @@
 from emotion_aware_assistant.nodes import *
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import*
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 from dotenv import load_dotenv
 load_dotenv()
-from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 work_state = StateGraph(GraphState)
 
