@@ -3,6 +3,8 @@ from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 
 def user_profile_node(state: GraphState) -> GraphState:
+    print("🧠 Entered user_profile_node with:", state)
+
     prompt = ChatPromptTemplate.from_messages([
         SystemMessage(content="""
 You are a personality profiler for an emotionally aware assistant.
@@ -18,16 +20,18 @@ Be warm and curious.
         HumanMessage(content="{input}")
     ])
 
-    response = (prompt | llm).invoke({"input": state["input"]})
+    response = (prompt | llm).invoke({"input": state.get("input", "")})
     user_profile = response.content.strip()
 
-    return {
-        **state,
-        "user_profile": user_profile
-    }
+    return GraphState(
+        **state.dict(),
+        user_profile=user_profile
+    )
     
 def welcome_node(state: GraphState) -> GraphState:
-    user_input = state.input.strip() if state.input else ""
+    print("👋 Entered welcome_node with:", state)
+
+    user_input = state.get("input", "").strip()
 
     if not user_input:
         welcome_message = """
