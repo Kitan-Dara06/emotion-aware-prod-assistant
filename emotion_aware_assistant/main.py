@@ -3,6 +3,7 @@ from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import*
 from dotenv import load_dotenv
 load_dotenv()
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 work_state = StateGraph(GraphState)
 
@@ -124,7 +125,10 @@ def read_root():
 def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
     print("Incoming state 2:", type(state))
-    state = ensure_graph_state(state)  
+    state = ensure_graph_state(state)
+    print("Incoming state:", state)
+    print("Incoming state 2:", type(state))
+      
 
     try:
         result = graph_app.invoke(state) 
