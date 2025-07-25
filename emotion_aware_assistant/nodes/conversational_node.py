@@ -33,7 +33,7 @@ def vent_node(state: GraphState) -> GraphState:
     return GraphState(
               **state.dict(),
         tool_result= None,
-        final_response = response.content
+        final_response = response.content.strip()
 
     )
 
