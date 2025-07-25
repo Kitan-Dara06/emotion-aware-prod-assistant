@@ -42,10 +42,14 @@ No extra text. No explanation. Just valid JSON.
 
 def Reschedule_node(state: GraphState) -> GraphState:
   
-    history = state.history[-4:]
+   
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🔍 node:", __name__)
+    history = state.history[-4:]
+
+
     full_input = "\n".join(history + [state.input])
 
     reschedule_result = rescheduleEvent(full_input)
