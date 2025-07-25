@@ -4,10 +4,11 @@ from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 def user_profile_node(state: GraphState) -> GraphState:
-    print("🧠 Entered user_profile_node with:", state)
     state = ensure_graph_state(state)
+    print("🔍 node:", __name__)
     print("💥 DEBUG: State type:", type(state))
     print("💥 DEBUG: State content:", state)
+    print("🧠 Entered user_profile_node with:", state)
 
     prompt = ChatPromptTemplate.from_messages([
         SystemMessage(content="""
