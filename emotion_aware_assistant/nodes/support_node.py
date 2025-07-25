@@ -39,7 +39,7 @@ def prioritize_tasks_node(state: GraphState) -> GraphState:
     tasks = []
 
     # 1. Local memory reminders
-   reminder = getattr(state, "reminder", []) or []
+    reminder = getattr(state, "reminder", []) or []
     for r in reminder:
         tasks.append((r["time"], f"🔔 {r['text']} at {r['time']}"))
 
