@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 work_state = StateGraph(GraphState)
+work_state.debug = True
 
 
 def fallback_node(state: GraphState) -> GraphState:
