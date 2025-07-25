@@ -5,6 +5,8 @@ from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
 def final_response_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
+    print("💥 DEBUG: State type:", type(state))
+    print("💥 DEBUG: State content:", state)
     tool_output = state.tool_result
     user_profile = state.user_profile or "You appreciate warmth and gentle encouragement."
 
