@@ -123,6 +123,8 @@ def read_root():
 
 def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
+    print("Incoming state 2:", type(state))
+    state = ensure_graph_state(state)  
 
     try:
         result = graph_app.invoke(state) 
