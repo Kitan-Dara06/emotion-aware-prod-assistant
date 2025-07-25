@@ -28,7 +28,7 @@ Adapt your tone based on this profile: {user_profile}
         **state.dict(),
         final_response = response.content.strip(),
         tool_result = None,
-        suggested_action = talk_only,
+        suggested_action ="talk_only",
         awaiting_user_confirmation = False
     )
 
