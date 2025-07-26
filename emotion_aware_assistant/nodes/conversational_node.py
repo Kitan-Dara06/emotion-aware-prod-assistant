@@ -118,6 +118,7 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
     # Safe state mutation
     updated_state = state.dict()
     updated_state["final_response"] = final_message
+    updated_state["response"] = final_message
     updated_state["tool_result"] = None
 
     return GraphState(**updated_state)    
