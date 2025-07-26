@@ -133,7 +133,7 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
 
 
 
-def continue_conversation_node_robust(state: GraphState) -> GraphState:
+def continue_conversation_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("🔍 node:", __name__)
     print("🔍 state type:", type(state))
