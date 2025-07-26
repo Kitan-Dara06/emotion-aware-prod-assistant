@@ -29,13 +29,15 @@ def vent_node(state: GraphState) -> GraphState:
         "joined_input": full_input,
         "user_profile": user_profile
     })
+    final_message = response.content
+    updated_state = state.dict()
+    updated_state["final_response"] = final_message
+    updated_state["response"] = final_message
+    updated_state["tool_result"] = None
+    return GraphState(**updated_state)    
 
-    return GraphState(
-              **state.dict(),
-        tool_result= None,
-        final_response = response.content.strip()
 
-    )
+
 
 def answer_question_node(state : GraphState) -> GraphState:
   state = ensure_graph_state(state)
@@ -68,13 +70,13 @@ def answer_question_node(state : GraphState) -> GraphState:
 
   final_summary = cleanly_truncate(response.content)
   final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
+  updated_state = state.dict()
+  updated_state["final_response"] = final_summary
+  updated_state["response"] = final_summary
+  updated_state["tool_result"] = None
+    return GraphState(**updated_state)  
 
-  return GraphState(
-    **state.dict(),
-    tool_result = None,
-    final_response = final_summary,
-      
-  )
+  
 def do_nothing_node(state: GraphState) -> GraphState:
     """Handles casual or non-actionable input in a friendly, human-like way."""
     
@@ -142,13 +144,15 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
   ])
 
   response = (prompt |llm ).invoke({"joined_input": full_input},)
+  final_response = response.content
+  updated_state = state.dict()
+  updated_state['final_response'] = final_response
+  updated_state['response'] = final_response
+  updated_state['tool_result'] = None
+  return GraphState(**updated_state)
 
-  return GraphState(
-       **state.dict(),
-        tool_result = None,
-        final_response = response.content,
-   
-    )
+
+  
 
 
 
@@ -187,12 +191,14 @@ Do not give advice or solutions here  just invite them to share more."""
         "joined_input": full_input,
         "user_profile": user_profile,
     })
+    final_response = response.content
+    updated_state = state.dict()
+    updated_state["final_response"] =final_response
+    updated_state["response"] = final_response
+    updated_state['tool_result'] = None
+    return GraphState(**updated_state)
 
-    return GraphState(
-        **state.dict(),
-        tool_result=None,
-        final_response=response.content.strip()
-    )
+   
   
 def fetch_info_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
@@ -244,19 +250,19 @@ User profile: {user_profile}
                                 "user_profile": user_profile})
         final_response = response.content.strip()
         clean_output = trim_to_last_full_sentence(final_response, word_limit=150)
-
+        updated_state = state.dict()
+        updated_state["final_response"] =clean_output
+        updated_state["response"] = clean_output
+        updated_state['tool_result'] = None
+        return GraphState(**updated_state)
     except Exception as e:
-        return GraphState(
-            **state.dict(),
-            tool_result = None,
-            final_response = f"⚠️ Error during info fetch: {str(e)}"
-        )
-
-    return GraphState(
-        **state.dict(),
-        tool_result = None,
-        final_response = clean_output
-    )
+        final_response = f"⚠️ Error during info fetch: {str(e)}"
+        updated_state = state.dict()
+        updated_state["final_response"] =final_response
+        updated_state["response"] = final_response
+        updated_state['tool_result'] = None
+        return GraphState(**updated_state)
+    
     
 def summarize_input_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
@@ -296,18 +302,19 @@ Be clear and emotionally aware, but don’t reflect past chats or context.
     chain = prompt | summarizer_llm
 
     try:
-        response = chain.invoke({"input_text": user_input})
-        
+        response = chain.invoke({"input_text": user_input}) 
         final_summary = response.content.strip()
+        updated_state = state.dict()
+        updated_state["final_response"] = final_summary 
+        updated_state["response"] = final_summary 
+        updated_state['tool_result'] = None
+        return GraphState(**updated_state)
     except Exception as e:
-        return GraphState(
-            **state.dict(),
-            tool_result =None,
-            final_response  = f"⚠️ Error during summarization: {str(e)}"
-        )
-
-    return GraphState(
-        **state.dict(),
-        tool_result = None,
-        final_response = final_summary
-    )
+        final_response = f"⚠️ Error during info fetch: {str(e)}"
+        updated_state = state.dict()
+        updated_state["final_response"] =final_response
+        updated_state["response"] = final_response
+        updated_state['tool_result'] = None
+        return GraphState(**updated_state)
+    
+    
