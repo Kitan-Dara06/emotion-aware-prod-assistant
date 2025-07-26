@@ -38,7 +38,7 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
             "user_profile": user_profile
         })
 
-        final_message = getattr(response, "content", None) or str(response)
+        final_message = (getattr(response, "content", None) or str(response)).strip()
 
     # SCENARIO 2: No tool used, just return the assistant's earlier response
     else:
