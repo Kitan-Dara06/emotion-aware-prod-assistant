@@ -41,15 +41,12 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
             })
 
         # Update conversation history
-        if user_input:
-            history.append(f"User: {user_input}")
-            history.append(f"Assistant: {response or ''}")
+       
 
         # Create new state using existing state as base
         new_state_data = state.dict()
         new_state_data.update({
             'emotion': emotion,
-            'response': response,
             'goal': goal,
             'suggested_action': suggested_action,
             'response_before_tool': response,
