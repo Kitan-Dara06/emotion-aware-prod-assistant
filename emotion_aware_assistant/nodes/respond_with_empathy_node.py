@@ -15,6 +15,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
 
     try:
         result = respond_with_empathy(user_input)
+        print("🟢 [Step 5] Result from empathy function:", result)
         print(f"🔍 Result type: {type(result)}")
         
         # Handle dictionary result (which is what you're getting)
@@ -59,6 +60,8 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
 
         new_state = GraphState(**new_state_data)
         print("✅ RETURNING TYPE:", type(new_state))
+        print("🟢 [Step 6] Updated History:", history)
+        print("🟢 [Step 7] Final State Returning:", new_state)
         return new_state
 
     except Exception as e:
