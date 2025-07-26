@@ -48,7 +48,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
         new_state_data = state.dict()
         new_state_data.update({
             'emotion': emotion,
-            'final_response': response,
+            'response': response,
             'goal': goal,
             'suggested_action': suggested_action,
             'response_before_tool': response,
