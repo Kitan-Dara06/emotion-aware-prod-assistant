@@ -3,7 +3,7 @@ from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state 
 
-def respond_with_empathy_node_safe(state: GraphState) -> GraphState:
+def respond_with_empathy_node(state: GraphState) -> GraphState:
     """
     Process user input with empathy and return updated state with error handling.
     """
