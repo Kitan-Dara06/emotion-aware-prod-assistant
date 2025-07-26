@@ -3,16 +3,20 @@ from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 
+from emotion_aware_assistant.utils.types import GraphState
+from emotion_aware_assistant.gloabal_import import *
+from emotion_aware_assistant.services.llm_model import llm
+from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
 def final_response_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
+    
     print("🔍 node:", __name__)
-    print("🔍 state type:", type(state))
     print("🔍 state content:", state)
 
     tool_output = state.tool_result
     user_profile = state.user_profile or "You appreciate warmth and gentle encouragement."
 
-    # SCENARIO 1: A tool was used, generate final response using tool result
     if tool_output:
         prompt = ChatPromptTemplate.from_messages([
             SystemMessagePromptTemplate.from_template("""You are an emotionally intelligent assistant.
@@ -25,7 +29,7 @@ Here’s what happened: {tool_result}
 
 Your job is to repeat this back to the user in a friendly, human tone.
 
-If the tool result includes a link (like a calendar event), include it **as-is** in the response.
+If the tool result includes a link (like a calendar event), include it as-is in the response.
 
 Do NOT write [insert calendar link here] — actually use the full link inside your message.
 """),
@@ -40,20 +44,16 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
 
         final_message = (getattr(response, "content", None) or str(response)).strip()
 
-    # SCENARIO 2: No tool used, just return the assistant's earlier response
     else:
-        final_message = state.response or "I'm here if you need anything else."
+        final_message = state.final_response or state.response or "I'm here if you need anything else."
 
-    # Update and return new state with final_response
-    print("🧪 ORIGINAL RESPONSE:", state.response)
-    print("🧪 FINAL MESSAGE RETURNED:", final_message)
-    new_state = state.dict()
-    new_state["final_response"] = final_message
+    updated_state = state.dict()
+    updated_state["response"] = final_message
+    updated_state["final_response"] = final_message
+    history = state.history or []
+    history.append(state.input)  
+    history.append(final_message)  
+    updated_state["history"] = history
 
     print("🗣️ FINAL RESPONSE STORED:", final_message)
-    print("🧪 FINAL RETURN TYPE:", type(new_state))
-    print("🧪 FINAL RETURN STATE:", new_state)
-    graph_state =GraphState(**new_state)
-    print("🧪 FINAL RETURN TYPE:", type(graph_state))
-    print("🧪 FINAL RETURN STATE:", graph_state)
-    return graph_state
+    return GraphState(**updated_state)
