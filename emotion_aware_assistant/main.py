@@ -82,7 +82,7 @@ work_state.add_conditional_edges(
 )
 
 work_state.add_conditional_edges(
-    "post_overwhelm_router_node", post_overwhelm_router_node
+    "post_overwhelm_router_node", post_overwhelm_router_node,
     {
         "reschedule_node": "reschedule_node",
         "prioritize_tasks_node": "prioritize_tasks_node",
