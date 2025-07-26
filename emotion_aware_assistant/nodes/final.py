@@ -45,10 +45,15 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
         final_message = state.response or "I'm here if you need anything else."
 
     # Update and return new state with final_response
+    print("🧪 ORIGINAL RESPONSE:", state.response)
+    print("🧪 FINAL MESSAGE RETURNED:", final_message)
     new_state = state.dict()
     new_state["final_response"] = final_message
 
     print("🗣️ FINAL RESPONSE STORED:", final_message)
     print("🧪 FINAL RETURN TYPE:", type(new_state))
     print("🧪 FINAL RETURN STATE:", new_state)
-    return GraphState(**new_state)
+    graph_state =GraphState(**new_state)
+    print("🧪 FINAL RETURN TYPE:", type(graph_state))
+    print("🧪 FINAL RETURN STATE:", graph_state)
+    return graph_state
