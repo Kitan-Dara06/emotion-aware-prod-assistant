@@ -9,9 +9,12 @@ from emotion_aware_assistant.utils.helper import parse_json_output
 llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=api_key, max_tokens=100, temperature=0.7)
 
 def respond_with_empathy(text):
+    print("🟡 [Step 1] User input:", text)
     emotion = detect_emotion(text)
 
     prompt_text = strict_system_prompt.format(emotion=emotion, text=text)
+    print("🟡 [Step 2] Prompt Sent To LLM:\n", prompt_text)
+
 
     prompt = ChatPromptTemplate.from_messages([
         SystemMessage(content=prompt_text)
@@ -21,7 +24,9 @@ def respond_with_empathy(text):
 
     try:
         raw_output = llm_chain.invoke({}, config={"max_tokens": 300})
+        print("🟡 [Step 3] LLM Raw Output:", raw_output)
         return parse_json_output(raw_output)
+        print("🟡 [Step 4] Parsed JSON:", result)
     except ChunkedEncodingError:
         return {"error": "Connection interrupted."}
 
