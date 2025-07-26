@@ -14,11 +14,14 @@ def fallback_node(state: GraphState) -> GraphState:
     print("🔍 node:", __name__)
     print("🔍 state type:", type(state))
     print("🔍 state content:", state)
-    return GraphState(
-        **state.dict(),
-        final_response="Hmm... I wasn't sure how to help with that. Could you rephrase?",
-        tool_result=None
-    )
+
+    final_response = "Hmm... I wasn't sure how to help with that. Could you rephrase?"
+    updated_state = state.dict()
+    updated_state['final_response'] = final_response
+    updated_state['response'] = final_response
+    updated_state['tool_result'] = None
+    return GraphState(**updated_state)
+   
 
 
 # Conditional edge router functions with proper error handling
