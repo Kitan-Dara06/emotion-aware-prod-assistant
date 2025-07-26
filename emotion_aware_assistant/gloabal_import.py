@@ -25,9 +25,8 @@ from langchain.prompts import  ChatPromptTemplate
 from langchain_core.messages import HumanMessage, SystemMessage
 from requests.exceptions import ChunkedEncodingError
 from langchain.agents import initialize_agent, AgentType
+from langchain.prompts.chat import SystemMessagePromptTemplate
 
-from langchain.prompts import ChatPromptTemplate
-from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from requests.exceptions import ChunkedEncodingError
 from google.oauth2 import service_account
