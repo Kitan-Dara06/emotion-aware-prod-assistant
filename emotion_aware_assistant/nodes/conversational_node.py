@@ -74,7 +74,7 @@ def answer_question_node(state : GraphState) -> GraphState:
   updated_state["final_response"] = final_summary
   updated_state["response"] = final_summary
   updated_state["tool_result"] = None
-    return GraphState(**updated_state)  
+  return GraphState(**updated_state)  
 
   
 def do_nothing_node(state: GraphState) -> GraphState:
