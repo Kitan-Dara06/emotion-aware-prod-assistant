@@ -7,10 +7,12 @@ def final_response_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("🔍 node:", __name__)
     print("🔍 state type:", type(state))
-    print("🔍 state content:", state)   
+    print("🔍 state content:", state)
+
     tool_output = state.tool_result
     user_profile = state.user_profile or "You appreciate warmth and gentle encouragement."
 
+    # SCENARIO 1: A tool was used, generate final response using tool result
     if tool_output:
         prompt = ChatPromptTemplate.from_messages([
             SystemMessagePromptTemplate.from_template("""You are an emotionally intelligent assistant.
@@ -36,18 +38,17 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
             "user_profile": user_profile
         })
 
-        final_message = getattr(response, 'content', None) or getattr(response, 'text', None) or str(response)
+        final_message = getattr(response, "content", None) or str(response)
 
-        new_state = state.dict()
-        new_state["final_response"] = final_message
-        print("🗣️ FINAL RESPONSE STORED:", final_message)
-        print("🧪 FINAL RETURN TYPE:", type(new_state))
-        print("🧪 FINAL RETURN STATE:", new_state)
-        return GraphState(**new_state)
-    
+    # SCENARIO 2: No tool used, just return the assistant's earlier response
     else:
-        new_state = state.dict()
-        new_state["final_response"] = state.response_before_tool or "I'm here if you need anything else."
-        print("🧪 FINAL RETURN TYPE:", type(new_state))
-        print("🧪 FINAL RETURN STATE:", new_state)
-        return GraphState(**new_state)
+        final_message = state.response or "I'm here if you need anything else."
+
+    # Update and return new state with final_response
+    new_state = state.dict()
+    new_state["final_response"] = final_message
+
+    print("🗣️ FINAL RESPONSE STORED:", final_message)
+    print("🧪 FINAL RETURN TYPE:", type(new_state))
+    print("🧪 FINAL RETURN STATE:", new_state)
+    return GraphState(**new_state)
