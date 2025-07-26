@@ -75,34 +75,52 @@ def answer_question_node(state : GraphState) -> GraphState:
     final_response = final_summary,
       
   )
-    
-
 def do_nothing_node(state: GraphState) -> GraphState:
-    state = ensure_graph_state(state) 
+    """Handles casual or non-actionable input in a friendly, human-like way."""
+    
+    state = ensure_graph_state(state)
     print("🔍 node:", __name__)
     print("🔍 state type:", type(state))
     print("🔍 state content:", state)
+
     full_input = "\n".join(
-       [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""]
-)
-    user_profile = state.user_profile or "You prefer warm, human responses."
-
-    prompt = ChatPromptTemplate.from_messages([
-        SystemMessagePromptTemplate.from_template("""The user just said something casual or friendly, like a joke, meme, or light comment.
-{user_profile}
-Respond in a relaxed, human tone. Acknowledge their message, and if it feels natural, ask a playful follow-up or express curiosity.
-No advice or emotion processing here — just chill, friendly chat like you'd have with someone close."""),
- HumanMessagePromptTemplate.from_template("{joined_input}")
-    ])
-
-    response = (prompt | llm).invoke({"joined_input": full_input,"user_profile": user_profile })
-    return GraphState(
-          **state.dict(),
-        tool_result = None,
-        final_response = response.content,
- 
+        [h for h in state.history or [] if isinstance(h, str)] + [state.input or ""]
     )
 
+
+    user_profile = state.user_profile or "You prefer warm, human responses."
+
+    
+    prompt = ChatPromptTemplate.from_messages([
+        SystemMessagePromptTemplate.from_template(
+            """The user just said something casual or friendly, like a joke, meme, or light comment.
+{user_profile}
+Respond in a relaxed, human tone. Acknowledge their message, and if it feels natural, ask a playful follow-up or express curiosity.
+No advice or emotion processing here — just chill, friendly chat like you'd have with someone close."""
+        ),
+        HumanMessagePromptTemplate.from_template("{joined_input}")
+    ])
+
+    try:
+       
+        chain: Runnable = prompt | llm
+        result = chain.invoke({
+            "joined_input": full_input,
+            "user_profile": user_profile
+        })
+
+        final_message = result.content
+
+    except Exception as e:
+        logger.exception("⚠️ Error in do_nothing_node LLM call.")
+        final_message = "Hehe, got it 😅 Just here if you need anything."
+
+    # Safe state mutation
+    updated_state = state.dict()
+    updated_state["final_response"] = final_message
+    updated_state["tool_result"] = None
+
+    return GraphState(**updated_state)    
 
 def give_advice_node(state : GraphState) -> GraphState:
   state = ensure_graph_state(state)  
