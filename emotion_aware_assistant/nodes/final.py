@@ -45,8 +45,8 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
         final_message = (getattr(response, "content", None) or str(response)).strip()
 
     else:
-        final_message = state.final_response or state.response or "I'm here if you need anything else."
-
+        final_message =  state.response or "I'm here if you need anything else."
+# state.final_response or
     updated_state = state.dict()
     updated_state["response"] = final_message
     # updated_state["final_response"] = final_message
