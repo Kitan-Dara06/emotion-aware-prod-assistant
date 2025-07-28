@@ -47,7 +47,6 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
             'emotion': emotion,
             'goal': goal,
             'suggested_action': suggested_action,
-            'response_before_tool': response,
             'emotion_history': emotion_history,
             'history': history,
             'tool_result': None
