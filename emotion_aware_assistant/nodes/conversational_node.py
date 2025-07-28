@@ -72,7 +72,7 @@ def answer_question_node(state : GraphState) -> GraphState:
   final_summary = cleanly_truncate(response.content)
   final_summary = trim_to_last_full_sentence(final_summary, word_limit=150)
   updated_state = state.dict()
-  updated_state["final_response"] = final_summary
+  # updated_state["final_response"] = final_summary
   updated_state["response"] = final_summary
   updated_state["tool_result"] = None
   return GraphState(**updated_state)  
@@ -120,7 +120,7 @@ No advice or emotion processing here — just chill, friendly chat like you'd ha
 
     # Safe state mutation
     updated_state = state.dict()
-    updated_state["final_response"] = final_message
+    # updated_state["final_response"] = final_message
     updated_state["response"] = final_message
     updated_state["tool_result"] = None
 
@@ -147,7 +147,7 @@ Gently guide them by highlighting trade-offs or options. Encourage reflection wh
   response = (prompt |llm ).invoke({"joined_input": full_input},)
   final_response = response.content
   updated_state = state.dict()
-  updated_state['final_response'] = final_response
+  # updated_state['final_response'] = final_response
   updated_state['response'] = final_response
   updated_state['tool_result'] = None
   return GraphState(**updated_state)
@@ -194,7 +194,7 @@ Do not give advice or solutions here  just invite them to share more."""
     })
     final_response = response.content
     updated_state = state.dict()
-    updated_state["final_response"] =final_response
+    # updated_state["final_response"] =final_response
     updated_state["response"] = final_response
     updated_state['tool_result'] = None
     return GraphState(**updated_state)
@@ -252,14 +252,14 @@ User profile: {user_profile}
         final_response = response.content.strip()
         clean_output = trim_to_last_full_sentence(final_response, word_limit=150)
         updated_state = state.dict()
-        updated_state["final_response"] =clean_output
+        # updated_state["final_response"] =clean_output
         updated_state["response"] = clean_output
         updated_state['tool_result'] = None
         return GraphState(**updated_state)
     except Exception as e:
         final_response = f"⚠️ Error during info fetch: {str(e)}"
         updated_state = state.dict()
-        updated_state["final_response"] =final_response
+        # updated_state["final_response"] =final_response
         updated_state["response"] = final_response
         updated_state['tool_result'] = None
         return GraphState(**updated_state)
@@ -306,14 +306,14 @@ Be clear and emotionally aware, but don’t reflect past chats or context.
         response = chain.invoke({"input_text": user_input}) 
         final_summary = response.content.strip()
         updated_state = state.dict()
-        updated_state["final_response"] = final_summary 
+        # updated_state["final_response"] = final_summary 
         updated_state["response"] = final_summary 
         updated_state['tool_result'] = None
         return GraphState(**updated_state)
     except Exception as e:
         final_response = f"⚠️ Error during info fetch: {str(e)}"
         updated_state = state.dict()
-        updated_state["final_response"] =final_response
+        # updated_state["final_response"] =final_response
         updated_state["response"] = final_response
         updated_state['tool_result'] = None
         return GraphState(**updated_state)
