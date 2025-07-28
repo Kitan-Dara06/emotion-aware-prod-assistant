@@ -10,7 +10,7 @@ def parse_json_output(ai_msg):
         for json_str in matches:
             try:
                 parsed = json.loads(json_str)
-                if all(k in parsed for k in ["emotion", "goal", "suggested_action", "response"]):
+                if all(k in parsed for k in ["emotion", "goal", "suggested_action", ]):
                     return parsed
             except json.JSONDecodeError:
                 continue  # Try next one if not valid JSON
