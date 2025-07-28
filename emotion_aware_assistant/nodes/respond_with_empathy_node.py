@@ -26,7 +26,6 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
         else:
             # Handle object result (just in case)
             emotion = getattr(result, 'emotion', None)
-            response = getattr(result, 'response', None)
             goal = getattr(result, 'goal', None)
             suggested_action = getattr(result, 'suggested_action', None)
 
