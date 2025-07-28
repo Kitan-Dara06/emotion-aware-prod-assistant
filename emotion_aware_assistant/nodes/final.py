@@ -49,7 +49,7 @@ Do NOT write [insert calendar link here] — actually use the full link inside y
 
     updated_state = state.dict()
     updated_state["response"] = final_message
-    updated_state["final_response"] = final_message
+    # updated_state["final_response"] = final_message
     history = state.history or []
     history.append(state.input)  
     history.append(final_message)  
