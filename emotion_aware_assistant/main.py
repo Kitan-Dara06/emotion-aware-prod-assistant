@@ -139,6 +139,8 @@ def preflight_check():
 def read_root():
     return {"message": "Emotion-Aware Assistant is live 🚀"}
 
+app.include_router(google_auth.router)
+
 @app.post("/chat")
 def run_graph(state: GraphState = Body(...)):
     print("Incoming state:", state)
