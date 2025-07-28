@@ -32,7 +32,7 @@ def vent_node(state: GraphState) -> GraphState:
     print(f"11. this is the full input {full_input}")
     final_message = response.content
     updated_state = state.dict()
-    updated_state["final_response"] = final_message
+    # updated_state["final_response"] = final_message
     updated_state["response"] = final_message
     updated_state["tool_result"] = None
     return GraphState(**updated_state)    
