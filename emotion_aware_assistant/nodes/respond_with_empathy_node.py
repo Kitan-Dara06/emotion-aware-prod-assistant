@@ -21,7 +21,6 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
         # Handle dictionary result (which is what you're getting)
         if isinstance(result, dict):
             emotion = result.get('emotion')
-            response = result.get('response')
             goal = result.get('goal')
             suggested_action = result.get('suggested_action')
         else:
