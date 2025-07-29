@@ -1,7 +1,7 @@
 
 from emotion_aware_assistant.gloabal_import import *
 
-from emotion_aware_assistant.database import SessionLocal
+from emotion_aware_assistant.services.database import SessionLocal
 from emotion_aware_assistant.services.user_token import UserToken
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
