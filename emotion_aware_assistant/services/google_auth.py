@@ -1,11 +1,8 @@
 
 from emotion_aware_assistant.service.database import SessionLocal
 from emotion_aware_assistant.service.user_token import UserToken
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import RedirectResponse, JSONResponse
-from sqlalchemy.orm import Session
-from google_auth_oauthlib.flow import Flow
-import os, pathlib, json
+from emotion_aware_assistant.gloabal_import import *
+
 router = APIRouter()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
