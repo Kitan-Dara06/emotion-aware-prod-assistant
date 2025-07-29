@@ -197,7 +197,7 @@ def update_calendar_event(event: str, new_time: str) -> str:
 
     return f"✅ Event rescheduled: {updated_event.get('htmlLink')}"
 
-def fetch_upcoming_events_for_user(user_email: str, max_results=5):
+def fetch_upcoming_events(user_email: str, max_results=5):
     
     service = get_calendar_service(user_email)
 
