@@ -1,6 +1,6 @@
 
-from emotion_aware_assistant.service.database import SessionLocal
-from emotion_aware_assistant.service.user_token import UserToken
+from emotion_aware_assistant.services.database import SessionLocal
+from emotion_aware_assistant.services.user_token import UserToken
 from emotion_aware_assistant.gloabal_import import *
 
 router = APIRouter()
