@@ -1,39 +1,29 @@
 
 from emotion_aware_assistant.gloabal_import import *
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+from emotion_aware_assistant.database import SessionLocal
+from emotion_aware_assistant.services.user_token import UserToken
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
-# Get absolute path to the current directory (i.e., services/)
-BASE_DIR = os.path.dirname(__file__)
-service_account_info = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
-credentials = service_account.Credentials.from_service_account_info(
-    service_account_info, scopes=SCOPES
-)
-# SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'service_account.json')
-CLIENT_SECRET_FILE = os.path.join(BASE_DIR, 'client_secret.json')
-TOKEN_PICKLE_FILE = os.path.join(BASE_DIR, 'token.pkl')
+def get_calendar_service(email: str):
+    db = SessionLocal()
+    token = db.query(UserToken).filter_by(email=email).first()
+    db.close()
+    
+    if not token:
+        raise Exception("User not authorized")
 
+    creds = Credentials(
+        token=token.token,
+        refresh_token=token.refresh_token,
+        token_uri=token.token_uri,
+        client_id=token.client_id,
+        client_secret=token.client_secret,
+        scopes=token.scopes.split(","),
+    )
+    return build("calendar", "v3", credentials=creds)
 
-def get_calendar_service(mode="service"):
-    if mode == "service":
-        return build("calendar", "v3", credentials=credentials)
-    elif mode == "client":
-        # OAuth client mode (user login required)
-        creds = None
-        if os.path.exists(TOKEN_PICKLE_FILE):
-            with open(TOKEN_PICKLE_FILE, 'rb') as token:
-                creds = pickle.load(token)
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-            creds = flow.run_local_server(port=0)
-            with open(TOKEN_PICKLE_FILE, 'wb') as token:
-                pickle.dump(creds, token)
-        credentials = creds
-    else:
-        raise ValueError("Mode must be 'service' or 'client'")
-
-    service = build('calendar', 'v3', credentials=credentials)
-    return service
 
 
 def create_event(event, time, repeat=None):
@@ -207,12 +197,15 @@ def update_calendar_event(event: str, new_time: str) -> str:
 
     return f"✅ Event rescheduled: {updated_event.get('htmlLink')}"
 
-def fetch_upcoming_events(service, max_results=5):
-    now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+def fetch_upcoming_events_for_user(user_email: str, max_results=5):
+    
+    service = get_calendar_service(user_email)
+
+    now = datetime.utcnow().isoformat() + 'Z'
     max_time = (datetime.utcnow() + timedelta(days=3)).isoformat() + 'Z'
 
     events_result = service.events().list(
-        calendarId='ololadeaaliyah@gmail.com',
+        calendarId='primary',  
         timeMin=now,
         timeMax=max_time,
         maxResults=max_results,
@@ -228,3 +221,4 @@ def fetch_upcoming_events(service, max_results=5):
         upcoming_events.append(f"📅 Event: {summary} at {start}")
 
     return upcoming_events
+
