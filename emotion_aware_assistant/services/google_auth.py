@@ -62,9 +62,13 @@ def oauth2callback(request: Request, db: Session = Depends(get_db)):
         )
         flow.fetch_token(code=code)
         credentials = flow.credentials
-        
+        idinfo = id_token.verify_oauth2_token(
+        flow.credentials._id_token,
+        google_requests.Request(),
+        flow.client_config['client_id'])
+        email = idinfo.get("email")  
       
-        email = "default_user@example.com"
+        
         
         token_data = UserToken(
             email=email,
