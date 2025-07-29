@@ -70,7 +70,7 @@ def Schedule_node(state: GraphState) -> GraphState:
 
     try:
 
-        user_email = getattr(state, 'user_email', 'default_user@example.com')
+        user_email = user_email = state.user_email or 'default_user@example.com'
         tool_result = create_event(user_email, schedule_event, schedule_time)
     except Exception as e:
         print(f"❌ Error creating event: {e}")
