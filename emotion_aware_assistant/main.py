@@ -3,6 +3,8 @@ from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import*
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
 from dotenv import load_dotenv
+from emotion_aware_assistant.services import google_auth
+from emotion_aware_assistant.services.database import engine, Base
 load_dotenv()
 
 work_state = StateGraph(GraphState)
@@ -131,6 +133,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+Base.metadata.create_all(bind=engine)
+app.include_router(google_auth.router)
+
 @app.options("/chat")
 def preflight_check():
     return {"message": "Preflight passed"}
@@ -139,7 +144,6 @@ def preflight_check():
 def read_root():
     return {"message": "Emotion-Aware Assistant is live 🚀"}
 
-app.include_router(google_auth.router)
 
 @app.post("/chat")
 def run_graph(state: GraphState = Body(...)):
