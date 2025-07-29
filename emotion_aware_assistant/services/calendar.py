@@ -27,7 +27,7 @@ def get_calendar_service(email: str):
 
 
 def create_event(event, time, repeat=None):
-    service = get_calendar_service()
+    service = get_calendar_service(email)
 
     # 1. Get current time in Lagos
     lagos_tz = pytz.timezone("Africa/Lagos")
@@ -93,7 +93,7 @@ def create_event(event, time, repeat=None):
 
     # 7. Create the event
     created_event = service.events().insert(
-        calendarId="ololadeaaliyah@gmail.com",
+        calendarId="primary",
         body=event_body
     ).execute()
 
@@ -101,10 +101,10 @@ def create_event(event, time, repeat=None):
 
 
 def update_calendar_event(event: str, new_time: str) -> str:
-    service = get_calendar_service()
+    service = get_calendar_service(email)
 
     events_result = service.events().list(
-        calendarId='ololadeaaliyah@gmail.com',
+        calendarId='primary',
         q=event,
         singleEvents=True,
         orderBy='startTime'
@@ -119,7 +119,7 @@ def update_calendar_event(event: str, new_time: str) -> str:
 
     matching_event = None  # ✅ Safe default
 
-    # 1️⃣ No close match — try soft substring match
+    
     if not best_matches:
         for ev in events:
             if event.lower() in ev.get("summary", "").lower():
@@ -128,7 +128,7 @@ def update_calendar_event(event: str, new_time: str) -> str:
         if not matching_event:
             return f"No events matched or contained '{event}'."
 
-    # 2️⃣ Multiple ambiguous matches
+   
     elif len(set(best_matches)) > 1:
         event_descriptions = [
             f"{ev['summary']} @ {ev['start'].get('dateTime', 'Unknown')}"
@@ -190,7 +190,7 @@ def update_calendar_event(event: str, new_time: str) -> str:
     }
 
     updated_event = service.events().update(
-        calendarId="ololadeaaliyah@gmail.com",
+        calendarId="primary",
         eventId=matching_event['id'],
         body=matching_event
     ).execute()
