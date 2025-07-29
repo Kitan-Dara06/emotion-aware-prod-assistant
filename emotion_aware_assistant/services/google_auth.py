@@ -31,7 +31,7 @@ def authorize():
             scopes=SCOPES,
             redirect_uri=REDIRECT_URI
         )
-        # Fixed: Proper method call for authorization URL
+       
         auth_url, _ = flow.authorization_url(
             prompt='consent', 
             access_type='offline', 
@@ -76,10 +76,10 @@ def oauth2callback(request: Request, db: Session = Depends(get_db)):
             scopes=",".join(credentials.scopes)
         )
         
-        # Check if user already exists
+        
         existing = db.query(UserToken).filter_by(email=email).first()
         if existing:
-            # Update existing token
+            
             existing.token = credentials.token
             existing.refresh_token = credentials.refresh_token
             existing.token_uri = credentials.token_uri
