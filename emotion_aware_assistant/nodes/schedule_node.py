@@ -68,6 +68,18 @@ def Schedule_node(state: GraphState) -> GraphState:
 
     tool_result = create_event(schedule_event, schedule_time)
 
+    try:
+
+        user_email = getattr(state, 'user_email', 'default_user@example.com')
+        tool_result = create_event(user_email, schedule_event, schedule_time)
+    except Exception as e:
+        print(f"❌ Error creating event: {e}")
+        tool_result = f"Sorry, I couldn't create the event: {str(e)}"
+    
+    current_events = getattr(state, 'schedule_event', [])
+    if not isinstance(current_events, list):
+        current_events = []
+
     updated_events = state.schedule_event + [
         {"event": schedule_event, "time": schedule_time}
     ]
