@@ -1,3 +1,4 @@
+import logging
 from emotion_aware_assistant.nodes import *
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import*
@@ -30,7 +31,7 @@ def fallback_node(state: GraphState) -> GraphState:
 def route_suggested_action(state: GraphState) -> str:
     state = ensure_graph_state(state)
     suggested_action = state.suggested_action
-    print(f"🔍 Routing suggested_action: '{suggested_action}'")
+    logger.debug("Routing suggested_action: '{suggested_action}'")
     
     # Define valid actions
     valid_actions = {
@@ -42,7 +43,7 @@ def route_suggested_action(state: GraphState) -> str:
     if suggested_action in valid_actions:
         return suggested_action
     else:
-        print(f"⚠️ Unknown suggested_action: '{suggested_action}', routing to fallback")
+        logger.warning("Unknown suggested_action: '{suggested_action}', routing to fallback")
         return "fallback"
 
 
@@ -121,6 +122,8 @@ graph_app = work_state.compile()
 
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 # FastAPI App
 app = FastAPI()

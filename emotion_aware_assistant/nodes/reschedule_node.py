@@ -1,11 +1,14 @@
 # class RescheduleEventInput(BaseModel):
 #   event :str
 #   new_time : str
+import logging
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.calendar import update_calendar_event
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
+logger = logging.getLogger(__name__)
 
 def rescheduleEvent(full_input: str):
   # structured_result = llm.with_structured_output(schema=RescheduleEventInput)

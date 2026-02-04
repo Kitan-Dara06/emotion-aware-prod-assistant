@@ -1,3 +1,4 @@
+import logging
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.types import GraphState
@@ -5,6 +6,8 @@ from emotion_aware_assistant.services.calendar import create_event
 import re, json
 from langchain_core.prompts import ChatPromptTemplate
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
+logger = logging.getLogger(__name__)
 
 
 def scheduleEvent(full_input: str):
@@ -73,7 +76,7 @@ def Schedule_node(state: GraphState) -> GraphState:
         user_email = user_email = state.user_email or 'default_user@example.com'
         tool_result = create_event(user_email, schedule_event, schedule_time)
     except Exception as e:
-        print(f"❌ Error creating event: {e}")
+        logger.error("Error creating event: {e}")
         tool_result = f"Sorry, I couldn't create the event: {str(e)}"
     
     current_events = getattr(state, 'schedule_event', [])

@@ -1,7 +1,10 @@
+import logging
 from emotion_aware_assistant.services.assistant import respond_with_empathy
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
+logger = logging.getLogger(__name__)
 def respond_with_empathy_node(state: GraphState) -> GraphState:
 
     state = ensure_graph_state(state)  
@@ -16,7 +19,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
     try:
         result = respond_with_empathy(user_input)
         print("🟢 [Step 5] Result from empathy function:", result)
-        print(f"🔍 Result type: {type(result)}")
+        logger.debug("Result type: {type(result)}")
         
         # Handle dictionary result (which is what you're getting)
         if isinstance(result, dict):
@@ -29,7 +32,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
             goal = getattr(result, 'goal', None)
             suggested_action = getattr(result, 'suggested_action', None)
 
-        print(f"🔍 Parsed - emotion: {emotion}, action: {suggested_action}")
+        logger.debug("Parsed - emotion: {emotion}, action: {suggested_action}")
 
         # Update emotion history
         if emotion:
@@ -59,7 +62,7 @@ def respond_with_empathy_node(state: GraphState) -> GraphState:
         return new_state
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        logger.error("Error: {e}")
         # Safe fallback
         fallback_data = state.dict()
         fallback_data.update({

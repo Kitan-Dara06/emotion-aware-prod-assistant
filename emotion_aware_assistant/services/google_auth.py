@@ -1,12 +1,34 @@
+import logging
+import os
+import pathlib
+from dotenv import load_dotenv
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import RedirectResponse, JSONResponse
+from sqlalchemy.orm import Session
+from google_auth_oauthlib.flow import Flow
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+
+# Load environment variables FIRST
+load_dotenv()
+
 from emotion_aware_assistant.services.database import SessionLocal
 from emotion_aware_assistant.services.user_token import UserToken
-from emotion_aware_assistant.gloabal_import import *
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+# Include all scopes that Google may add (userinfo is added automatically for OAuth)
+SCOPES = [
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'openid'
+]
 
-REDIRECT_URI = os.getenv("REDIRECT_URI", "https://emotion-aware-prod-assistant.onrender.com/oauth2callback")
+# Get redirect URI from environment (defaults to localhost for development)
+REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:8000/api/v2/auth/oauth2callback")
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 CLIENT_SECRET_FILE = os.path.join(BASE_DIR, 'client_secret.json')
@@ -39,7 +61,7 @@ def authorize():
         )
         return RedirectResponse(auth_url)
     except Exception as e:
-        print(f"❌ Authorization error: {e}")
+        logger.error("Authorization error: {e}")
         return JSONResponse(
             status_code=500, 
             content={"error": f"Authorization failed: {str(e)}"}
@@ -98,7 +120,7 @@ def oauth2callback(request: Request, db: Session = Depends(get_db)):
         return JSONResponse(content={"message": f"{email} authorized successfully 🎉"})
         
     except Exception as e:
-        print(f"❌ OAuth callback error: {e}")
+        logger.error("OAuth callback error: {e}")
         return JSONResponse(
             status_code=500,
             content={"error": f"OAuth callback failed: {str(e)}"}

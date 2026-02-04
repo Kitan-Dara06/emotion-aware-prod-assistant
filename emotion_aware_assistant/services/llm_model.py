@@ -1,8 +1,9 @@
-from emotion_aware_assistant.gloabal_import import *
+# DEPRECATED: Old LangChain LLM initialization
+# New implementation uses OpenAI client directly in handlers
+
+import os
+from openai import OpenAI
 from emotion_aware_assistant.config import api_key
-llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
-    api_key=os.getenv("OPENAI_API_KEY"),
-    max_tokens=100,
-    temperature=0.7
-)
+
+# For backward compatibility with old code
+llm_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or api_key)

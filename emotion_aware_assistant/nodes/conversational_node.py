@@ -1,9 +1,12 @@
+import logging
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state  
 from emotion_aware_assistant.utils.trim import cleanly_truncate
 from emotion_aware_assistant.utils.trim import trim_to_last_full_sentence
+
+logger = logging.getLogger(__name__)
 
 def vent_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)  
@@ -29,7 +32,7 @@ def vent_node(state: GraphState) -> GraphState:
         "joined_input": full_input,
         "user_profile": user_profile
     })
-    print(f"11. this is the full input {full_input}")
+    logger.info(f"11. this is the full input {full_input}")
     final_message = response.content
     updated_state = state.dict()
     # updated_state["final_response"] = final_message
@@ -168,10 +171,10 @@ def continue_conversation_node(state: GraphState) -> GraphState:
     
     try:
         emotion = state.emotion or ""
-        print(f"🔍 Emotion accessed successfully: '{emotion}'")
+        logger.debug("Emotion accessed successfully: '{emotion}'")
     except AttributeError as e:
-        print(f"❌ Error accessing emotion: {e}")
-        print(f"🔍 State attributes: {dir(state)}")
+        logger.error("Error accessing emotion: {e}")
+        logger.debug("State attributes: {dir(state)}")
         emotion = ""
 
     prompt = ChatPromptTemplate.from_messages([

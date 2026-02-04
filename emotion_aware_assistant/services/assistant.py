@@ -1,37 +1,71 @@
+# DEPRECATED: This file is from the old LangGraph implementation
+# New implementation is in core/assistant.py
+# Keeping minimal version for backward compatibility with old nodes
 
+import logging
+from openai import OpenAI
+from emotion_aware_assistant.config import api_key
 from emotion_aware_assistant.services.emotion import detect_emotion
-from emotion_aware_assistant.gloabal_import import *
-from emotion_aware_assistant.services.emotion import detect_emotion
-from emotion_aware_assistant.services.prompts import strict_system_prompt
-from emotion_aware_assistant.utils.helper import parse_json_output
+import json
+import re
 
+logger = logging.getLogger(__name__)
 
-llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=api_key, max_tokens=100, temperature=0.7)
+client = OpenAI(api_key=api_key)
 
-def respond_with_empathy(text):
-    print("🟡 [Step 1] User input:", text)
+def respond_with_empathy(text: str) -> dict:
+    """
+    DEPRECATED: Old LangGraph version
+    Use core.assistant.EmotionAwareAssistant instead
+    
+    Kept for backward compatibility with old nodes
+    """
+    logger.warning("WARNING: Using deprecated respond_with_empathy(). Migrate to core.assistant.EmotionAwareAssistant")
+    
+    # Detect emotion
     emotion = detect_emotion(text)
+    
+    # Simple prompt for emotion + goal + action
+    prompt = f"""Analyze this user message and respond with JSON.
 
-    prompt_text = strict_system_prompt.format(emotion=emotion, text=text)
-    print("🟡 [Step 2] Prompt Sent To LLM:\n", prompt_text)
+User message: "{text}"
+Detected emotion: {emotion}
 
+Return ONLY valid JSON with these fields:
+{{
+    "emotion": "{emotion}",
+    "goal": "what the user wants to achieve (1 sentence)",
+    "suggested_action": "one of: vent, schedule_event, set_reminder, reschedule_event, answer_question, give_advice, fetch_info, do_nothing, continue_conversation"
+}}
 
-    prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=prompt_text)
-    ])
-
-    llm_chain = prompt | llm
+Return JSON:"""
 
     try:
-        raw_output = llm_chain.invoke({}, config={"max_tokens": 300})
-        print("🟡 [Step 3] LLM Raw Output:", raw_output)
-        result =parse_json_output(raw_output)
-        print("🟡 [Step 4] Parsed JSON:", result)
-        return result
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=150
+        )
         
-    except ChunkedEncodingError:
-        return {"error": "Connection interrupted."}
-
-
-
-
+        raw_output = response.choices[0].message.content
+        
+        # Extract JSON
+        match = re.search(r'\{.*?\}', raw_output, re.DOTALL)
+        if match:
+            result = json.loads(match.group())
+            return result
+        else:
+            return {
+                "emotion": emotion,
+                "goal": "continue conversation",
+                "suggested_action": "continue_conversation"
+            }
+            
+    except Exception as e:
+        logger.error(f"Error in respond_with_empathy: {e}")
+        return {
+            "emotion": emotion,
+            "goal": "continue conversation",
+            "suggested_action": "continue_conversation"
+        }

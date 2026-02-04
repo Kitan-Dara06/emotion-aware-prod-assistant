@@ -1,6 +1,9 @@
+import logging
 from emotion_aware_assistant.utils.helper import Reminder
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
+logger = logging.getLogger(__name__)
 def Reminder_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("💥 DEBUG: State type:", type(state))

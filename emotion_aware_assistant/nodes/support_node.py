@@ -1,9 +1,12 @@
+import logging
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.services.llm_model import llm
 from emotion_aware_assistant.services.calendar import fetch_upcoming_events
 from emotion_aware_assistant.services.calendar import get_calendar_service
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
+logger = logging.getLogger(__name__)
 def talk_only_node(state: GraphState) -> GraphState:
     state = ensure_graph_state(state)
     print("🔍 node:", __name__)

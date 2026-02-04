@@ -1,10 +1,17 @@
-
-from emotion_aware_assistant.gloabal_import import *
+import logging
+import pytz
+import dateparser
+import re
+from datetime import datetime, timedelta
+from difflib import get_close_matches
+from typing import Optional, List, Dict
 
 from emotion_aware_assistant.services.database import SessionLocal
-from emotion_aware_assistant.services.user_token import UserToken
+from emotion_aware_assistant.services.models import UserToken
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+
+logger = logging.getLogger(__name__)
 
 def get_calendar_service(email: str):
     db = SessionLocal()
@@ -26,7 +33,93 @@ def get_calendar_service(email: str):
 
 
 
-def create_event(event, time, repeat=None):
+def parse_duration(text: str) -> timedelta:
+    """
+    Parse duration from natural language
+    
+    Examples:
+    - "2 hours" → timedelta(hours=2)
+    - "30 minutes" → timedelta(minutes=30)
+    - "1.5 hours" → timedelta(hours=1, minutes=30)
+    """
+    
+    # Default duration
+    default = timedelta(hours=1)
+    
+    if not text:
+        return default
+    
+    text = text.lower()
+    
+    # Match patterns like "2 hours", "30 minutes", "1.5 hours"
+    hour_match = re.search(r'(\d+\.?\d*)\s*(?:hour|hr|h)s?', text)
+    min_match = re.search(r'(\d+)\s*(?:minute|min|m)s?', text)
+    
+    hours = 0
+    minutes = 0
+    
+    if hour_match:
+        hours = float(hour_match.group(1))
+    
+    if min_match:
+        minutes = int(min_match.group(1))
+    
+    if hours > 0 or minutes > 0:
+        # Convert fractional hours to minutes
+        total_minutes = int(hours * 60) + minutes
+        return timedelta(minutes=total_minutes)
+    
+    return default
+
+
+def check_conflicts(
+    email: str,
+    start_time: datetime,
+    end_time: datetime
+) -> List[Dict]:
+    """
+    Check for calendar conflicts in the given time range
+    
+    Args:
+        email: User's email
+        start_time: Event start time
+        end_time: Event end time
+        
+    Returns:
+        List of conflicting events with summary and time
+    """
+    
+    try:
+        service = get_calendar_service(email)
+        
+        # Query events in the time range
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=start_time.isoformat(),
+            timeMax=end_time.isoformat(),
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+        
+        events = events_result.get('items', [])
+        
+        conflicts = []
+        for event in events:
+            event_start = event['start'].get('dateTime', event['start'].get('date'))
+            conflicts.append({
+                'summary': event.get('summary', 'Untitled'),
+                'start': event_start,
+                'id': event.get('id')
+            })
+        
+        return conflicts
+        
+    except Exception as e:
+        logger.error(f"Error checking conflicts: {e}")
+        return []
+
+
+def create_event(email, event, time, repeat=None, duration: Optional[str] = None):
     service = get_calendar_service(email)
 
     # 1. Get current time in Lagos
@@ -53,8 +146,13 @@ def create_event(event, time, repeat=None):
         days_ahead = (start_weekday - now_weekday + 7) % 7 or 7
         start_time += timedelta(days=days_ahead)
 
-    # 4. Compute end time
-    end_time = start_time + timedelta(hours=1)
+    # 4. Compute end time (with duration parsing)
+    if duration:
+        event_duration = parse_duration(duration)
+    else:
+        event_duration = timedelta(hours=1)  # Default 1 hour
+    
+    end_time = start_time + event_duration
 
     # 5. Build the event body
     event_body = {
@@ -100,7 +198,7 @@ def create_event(event, time, repeat=None):
     return f"🚀 Event created: {created_event.get('htmlLink')}"
 
 
-def update_calendar_event(event: str, new_time: str) -> str:
+def update_calendar_event(email: str, event: str, new_time: str) -> str:
     service = get_calendar_service(email)
 
     events_result = service.events().list(
@@ -171,14 +269,14 @@ def update_calendar_event(event: str, new_time: str) -> str:
     # Optional: shift into future if it's behind now
     now = datetime.now(lagos_tz)
     if new_start < now:
-        print("⏩ Adjusting to future date because parsed time was in the past.")
+        logger.info("⏩ Adjusting to future date because parsed time was in the past.")
         new_start += timedelta(days=1)
 
     new_end = new_start + timedelta(hours=1)
 
     # ✅ Print original event
-    print(f"🔍 Original: {matching_event['summary']} @ {matching_event['start']['dateTime']}")
-    print(f"🕒 Parsed start: {new_start.isoformat()} → {new_end.isoformat()}")
+    logger.debug("Original: {matching_event['summary']} @ {matching_event['start']['dateTime']}")
+    logger.info(f"🕒 Parsed start: {new_start.isoformat()} → {new_end.isoformat()}")
 
     matching_event['start'] = {
         'dateTime': new_start.isoformat(),

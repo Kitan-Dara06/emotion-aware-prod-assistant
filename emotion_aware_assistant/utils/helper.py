@@ -1,5 +1,8 @@
+import logging
 from emotion_aware_assistant.gloabal_import import *
 from emotion_aware_assistant.services.llm_model import llm
+
+logger = logging.getLogger(__name__)
 def parse_json_output(ai_msg):
     try:
         # Check if it's an AIMessage (LangChain), else treat as raw string
@@ -46,15 +49,15 @@ Example:
     ]
 
     try:
-        print("Sending request to LLM...")
+        logger.info("Sending request to LLM...")
         response = llm.invoke(messages, config={"max_tokens": 80, "temperature": 0})
-        print(f"Response type: {type(response)}")
-        print(f"Response: {response}")
+        logger.info(f"Response type: {type(response)}")
+        logger.info(f"Response: {response}")
         output_text = getattr(response, 'content', None) or str(response)
-        print(f"Extracted text: {output_text}")
+        logger.info(f"Extracted text: {output_text}")
 
     except Exception as e:
-        print(f"Error during API call: {str(e)}")
+        logger.error(f"Error during API call: {str(e)}")
         return {"error": str(e)}
 
     # Try to extract a valid JSON from the model's output

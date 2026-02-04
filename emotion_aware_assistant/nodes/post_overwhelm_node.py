@@ -1,7 +1,10 @@
+import logging
 from emotion_aware_assistant.utils.types import GraphState
 from emotion_aware_assistant.gloabal_import import *
 from typing import Literal
 from emotion_aware_assistant.utils.ensure_graph_state import ensure_graph_state
+
+logger = logging.getLogger(__name__)
 
 def post_overwhelm_router_node(state: GraphState) -> Literal[
     "reschedule_node", 
