@@ -1,0 +1,187 @@
+.emotion-indicator {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+}
+
+/* Size Variants */
+.emotion-indicator--small {
+    width: 24px;
+    height: 24px;
+}
+
+.emotion-indicator--medium {
+    width: 40px;
+    height: 40px;
+}
+
+.emotion-indicator--large {
+    width: 60px;
+    height: 60px;
+}
+
+/* Core Circle */
+.emotion-indicator__core {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: var(--emotion-neutral);
+    transition: all var(--transition-base);
+    z-index: 2;
+    position: relative;
+}
+
+/* Glow Effect */
+.emotion-indicator__glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-full);
+    opacity: 0.5;
+    filter: blur(8px);
+    animation: emotionPulse 2s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Emotion-specific colors */
+.emotion-indicator--admiration .emotion-indicator__core,
+.emotion-indicator--admiration .emotion-indicator__glow {
+    background: var(--emotion-admiration);
+}
+
+.emotion-indicator--amusement .emotion-indicator__core,
+.emotion-indicator--amusement .emotion-indicator__glow {
+    background: var(--emotion-amusement);
+}
+
+.emotion-indicator--anger .emotion-indicator__core,
+.emotion-indicator--anger .emotion-indicator__glow {
+    background: var(--emotion-anger);
+}
+
+.emotion-indicator--annoyance .emotion-indicator__core,
+.emotion-indicator--annoyance .emotion-indicator__glow {
+    background: var(--emotion-annoyance);
+}
+
+.emotion-indicator--approval .emotion-indicator__core,
+.emotion-indicator--approval .emotion-indicator__glow {
+    background: var(--emotion-approval);
+}
+
+.emotion-indicator--caring .emotion-indicator__core,
+.emotion-indicator--caring .emotion-indicator__glow {
+    background: var(--emotion-caring);
+}
+
+.emotion-indicator--confusion .emotion-indicator__core,
+.emotion-indicator--confusion .emotion-indicator__glow {
+    background: var(--emotion-confusion);
+}
+
+.emotion-indicator--curiosity .emotion-indicator__core,
+.emotion-indicator--curiosity .emotion-indicator__glow {
+    background: var(--emotion-curiosity);
+}
+
+.emotion-indicator--desire .emotion-indicator__core,
+.emotion-indicator--desire .emotion-indicator__glow {
+    background: var(--emotion-desire);
+}
+
+.emotion-indicator--disappointment .emotion-indicator__core,
+.emotion-indicator--disappointment .emotion-indicator__glow {
+    background: var(--emotion-disappointment);
+}
+
+.emotion-indicator--disapproval .emotion-indicator__core,
+.emotion-indicator--disapproval .emotion-indicator__glow {
+    background: var(--emotion-disapproval);
+}
+
+.emotion-indicator--disgust .emotion-indicator__core,
+.emotion-indicator--disgust .emotion-indicator__glow {
+    background: var(--emotion-disgust);
+}
+
+.emotion-indicator--embarrassment .emotion-indicator__core,
+.emotion-indicator--embarrassment .emotion-indicator__glow {
+    background: var(--emotion-embarrassment);
+}
+
+.emotion-indicator--excitement .emotion-indicator__core,
+.emotion-indicator--excitement .emotion-indicator__glow {
+    background: var(--emotion-excitement);
+}
+
+.emotion-indicator--fear .emotion-indicator__core,
+.emotion-indicator--fear .emotion-indicator__glow {
+    background: var(--emotion-fear);
+}
+
+.emotion-indicator--gratitude .emotion-indicator__core,
+.emotion-indicator--gratitude .emotion-indicator__glow {
+    background: var(--emotion-gratitude);
+}
+
+.emotion-indicator--grief .emotion-indicator__core,
+.emotion-indicator--grief .emotion-indicator__glow {
+    background: var(--emotion-grief);
+}
+
+.emotion-indicator--joy .emotion-indicator__core,
+.emotion-indicator--joy .emotion-indicator__glow {
+    background: var(--emotion-joy);
+}
+
+.emotion-indicator--love .emotion-indicator__core,
+.emotion-indicator--love .emotion-indicator__glow {
+    background: var(--emotion-love);
+}
+
+.emotion-indicator--nervousness .emotion-indicator__core,
+.emotion-indicator--nervousness .emotion-indicator__glow {
+    background: var(--emotion-nervousness);
+}
+
+.emotion-indicator--optimism .emotion-indicator__core,
+.emotion-indicator--optimism .emotion-indicator__glow {
+    background: var(--emotion-optimism);
+}
+
+.emotion-indicator--pride .emotion-indicator__core,
+.emotion-indicator--pride .emotion-indicator__glow {
+    background: var(--emotion-pride);
+}
+
+.emotion-indicator--realization .emotion-indicator__core,
+.emotion-indicator--realization .emotion-indicator__glow {
+    background: var(--emotion-realization);
+}
+
+.emotion-indicator--relief .emotion-indicator__core,
+.emotion-indicator--relief .emotion-indicator__glow {
+    background: var(--emotion-relief);
+}
+
+.emotion-indicator--remorse .emotion-indicator__core,
+.emotion-indicator--remorse .emotion-indicator__glow {
+    background: var(--emotion-remorse);
+}
+
+.emotion-indicator--sadness .emotion-indicator__core,
+.emotion-indicator--sadness .emotion-indicator__glow {
+    background: var(--emotion-sadness);
+}
+
+.emotion-indicator--surprise .emotion-indicator__core,
+.emotion-indicator--surprise .emotion-indicator__glow {
+    background: var(--emotion-surprise);
+}
+
+.emotion-indicator--neutral .emotion-indicator__core,
+.emotion-indicator--neutral .emotion-indicator__glow {
+    background: var(--emotion-neutral);
+}

@@ -1,0 +1,19 @@
+.typing-indicator {
+    display: flex;
+    align-self: flex-start;
+    margin-bottom: var(--space-lg);
+}
+
+.typing-indicator__content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    border-bottom-left-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+}

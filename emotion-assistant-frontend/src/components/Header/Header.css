@@ -1,0 +1,103 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    padding: var(--space-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header__branding {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.header__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+}
+
+.header__emoji {
+    font-size: var(--font-size-2xl);
+}
+
+.header__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+.header__emotion {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-full);
+}
+
+.header__emotion-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: capitalize;
+}
+
+.header__clear-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.header__clear-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    transform: scale(1.05);
+}
+
+.header__clear-btn:active {
+    transform: scale(0.95);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .header {
+        padding: var(--space-md);
+    }
+
+    .header__title {
+        font-size: var(--font-size-lg);
+    }
+
+    .header__emoji {
+        font-size: var(--font-size-xl);
+    }
+
+    .header__emotion-label {
+        display: none;
+    }
+}

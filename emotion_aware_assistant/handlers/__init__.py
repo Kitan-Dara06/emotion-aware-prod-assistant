@@ -16,12 +16,12 @@ from .productivity import (
     RescheduleHandler
 )
 from .emotion import (
-
-logger = logging.getLogger(__name__)
     OverwhelmHandler,
     PrioritizeTasksHandler,
     TalkOnlyHandler
 )
+
+logger = logging.getLogger(__name__)
 
 # Handler registry - maps action names to handler classes
 HANDLERS: Dict[str, Type[BaseHandler]] = {

@@ -35,7 +35,7 @@ ONLY choose from this list of 28 possible emotions (no freeform words):
 
 {', '.join(GO_EMOTION_LIST)}
 
-User message: "{text}"
+User message: "{user_input}"
 
 Return just one word — the most likely emotion from the list above."""
 
@@ -51,12 +51,12 @@ Return just one word — the most likely emotion from the list above."""
         
         # Log if emotion is unexpected, but trust the LLM's judgment
         if emotion not in GO_EMOTION_LIST:
-            logger.warning("LLM returned unexpected emotion: '{emotion}' (not in GO_EMOTION_LIST)")
-            logger.info(f"   Trusting LLM's judgment - this might be a valid nuanced emotion")
+            logger.warning(f"LLM returned unexpected emotion: '{emotion}' (not in GO_EMOTION_LIST)")
+            logger.info("   Trusting LLM's judgment - this might be a valid nuanced emotion")
         
         return emotion
             
     except Exception as e:
-        logger.error("Error detecting emotion: {e}")
+        logger.error(f"Error detecting emotion: {e}")
         # Only fallback to neutral on technical errors (API failure, etc.)
         return "neutral"

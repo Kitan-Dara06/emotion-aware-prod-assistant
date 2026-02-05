@@ -1,0 +1,175 @@
+/* ============================================
+   ANIMATIONS & MICRO-INTERACTIONS
+   ============================================ */
+
+/* === MESSAGE ENTRANCE ANIMATION === */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-slide-in-left {
+    animation: slideInFromLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-right {
+    animation: slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* === EMOTION INDICATOR PULSE === */
+@keyframes emotionPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.animate-emotion-pulse {
+    animation: emotionPulse 2s ease-in-out infinite;
+}
+
+/* === TYPING INDICATOR DOTS === */
+@keyframes typingDot {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+.typing-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    margin: 0 2px;
+}
+
+.typing-dot:nth-child(1) {
+    animation: typingDot 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation: typingDot 1.4s infinite 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation: typingDot 1.4s infinite 0.4s;
+}
+
+/* === FADE IN ANIMATION === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* === SHIMMER LOADING === */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.animate-shimmer {
+    background: linear-gradient(90deg,
+            var(--color-bg-secondary) 0%,
+            var(--color-bg-tertiary) 50%,
+            var(--color-bg-secondary) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* === GLOW EFFECT === */
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+    }
+}
+
+.animate-glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* === SCALE ON HOVER === */
+.hover-scale {
+    transition: transform var(--transition-base);
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* === BUTTON PRESS EFFECT === */
+.button-press {
+    transition: transform var(--transition-fast);
+}
+
+.button-press:active {
+    transform: scale(0.95);
+}
+
+/* === SMOOTH TRANSITIONS === */
+.transition-all {
+    transition: all var(--transition-base);
+}
+
+.transition-colors {
+    transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.transition-transform {
+    transition: transform var(--transition-base);
+}

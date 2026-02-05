@@ -1,0 +1,271 @@
+/* ============================================
+   EMOTION-AWARE PRODUCTIVITY ASSISTANT
+   Design System & Global Styles
+   ============================================ */
+
+/* === GOOGLE FONTS === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* === CSS RESET === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* Prevent body scroll */
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* === DESIGN TOKENS === */
+:root {
+  /* Colors - Primary Palette */
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #818cf8;
+  --color-secondary: #8b5cf6;
+  --color-accent: #ec4899;
+
+  /* Background Colors */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-bg-glass: rgba(30, 41, 59, 0.7);
+
+  /* Text Colors */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+
+  /* Emotion Colors (28 emotions from go_emotions) */
+  --emotion-admiration: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --emotion-amusement: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+  --emotion-anger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --emotion-annoyance: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  --emotion-approval: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --emotion-caring: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+  --emotion-confusion: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  --emotion-curiosity: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  --emotion-desire: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+  --emotion-disappointment: linear-gradient(135deg, #64748b 0%, #475569 100%);
+  --emotion-disapproval: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  --emotion-disgust: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+  --emotion-embarrassment: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  --emotion-excitement: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  --emotion-fear: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --emotion-gratitude: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  --emotion-grief: linear-gradient(135deg, #475569 0%, #334155 100%);
+  --emotion-joy: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --emotion-love: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+  --emotion-nervousness: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  --emotion-optimism: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+  --emotion-pride: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  --emotion-realization: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+  --emotion-relief: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  --emotion-remorse: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  --emotion-sadness: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  --emotion-surprise: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+  --emotion-neutral: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Typography */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index Scale */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 300;
+  --z-tooltip: 400;
+}
+
+/* === UTILITY CLASSES === */
+
+/* Flexbox Utilities */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: var(--space-sm);
+}
+
+.gap-md {
+  gap: var(--space-md);
+}
+
+.gap-lg {
+  gap: var(--space-lg);
+}
+
+/* Spacing Utilities */
+.p-sm {
+  padding: var(--space-sm);
+}
+
+.p-md {
+  padding: var(--space-md);
+}
+
+.p-lg {
+  padding: var(--space-lg);
+}
+
+.m-sm {
+  margin: var(--space-sm);
+}
+
+.m-md {
+  margin: var(--space-md);
+}
+
+.m-lg {
+  margin: var(--space-lg);
+}
+
+/* Text Utilities */
+.text-sm {
+  font-size: var(--font-size-sm);
+}
+
+.text-md {
+  font-size: var(--font-size-md);
+}
+
+.text-lg {
+  font-size: var(--font-size-lg);
+}
+
+.text-xl {
+  font-size: var(--font-size-xl);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* === SCROLLBAR STYLING === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* === SELECTION STYLING === */
+::selection {
+  background: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+/* === FOCUS STYLES === */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* === GLASSMORPHISM UTILITY === */
+.glass {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

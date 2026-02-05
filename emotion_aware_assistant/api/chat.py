@@ -16,12 +16,12 @@ from emotion_aware_assistant.services.database import get_session_local
 from emotion_aware_assistant.services.conversation import ConversationService
 from emotion_aware_assistant.services.vector_memory import VectorMemoryService
 from emotion_aware_assistant.services.calendar import (
-
-logger = logging.getLogger(__name__)
     get_calendar_service,
     create_event,
     update_calendar_event
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
