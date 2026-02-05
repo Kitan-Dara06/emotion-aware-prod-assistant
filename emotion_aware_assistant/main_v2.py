@@ -78,14 +78,10 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     
     print(f"""
-    ╔═══════════════════════════════════════════════════════════╗
-    ║  Emotion-Aware Productivity Assistant v2.0               ║
-    ║  Pure Python Architecture (No LangGraph)                 ║
-    ╚═══════════════════════════════════════════════════════════╝
-    
-    🚀 Server starting on http://localhost:{port}
-    📚 API Docs: http://localhost:{port}/docs
-    💚 Health: http://localhost:{port}/health
+
+     Server starting on http://localhost:{port}
+     API Docs: http://localhost:{port}/docs
+    Health: http://localhost:{port}/health
     
     Endpoints:
     - POST /api/v2/chat - Main chat endpoint
